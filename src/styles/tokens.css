@@ -1,0 +1,89 @@
+/*
+ * Rollout design tokens — the single source of truth for color, type,
+ * spacing, radius and motion. Components never use raw hex or px values;
+ * they use these tokens through Tailwind utilities (see globals.css @theme)
+ * or var(--token) in canvas/SVG code (see src/lib/tokens.ts).
+ */
+
+:root {
+  color-scheme: dark;
+
+  /* ── Color: surfaces ─────────────────────────────────────────── */
+  --c-bg: #0b0d10;          /* page */
+  --c-surface-1: #101318;   /* panels */
+  --c-surface-2: #151920;   /* raised: inputs, cards */
+  --c-surface-3: #1c2129;   /* hover / selected */
+  --c-line: #20262e;        /* hairlines */
+  --c-line-strong: #2d343e; /* emphasized borders */
+
+  /* ── Color: ink (all AA on --c-bg and --c-surface-1) ─────────── */
+  --c-ink: #e7e9ec;         /* primary text  ~15.8:1 */
+  --c-ink-2: #a4abb5;       /* secondary     ~8.1:1  */
+  --c-ink-3: #7c8591;       /* tertiary      ~5.0:1  */
+
+  /* ── Color: signal ───────────────────────────────────────────── */
+  --c-accent: #e9b872;      /* phosphor amber — the only accent */
+  --c-accent-ink: #1a1408;  /* text on accent */
+  --c-accent-soft: rgb(233 184 114 / 0.12);
+  --c-hazard: #d9695f;
+  --c-hazard-soft: rgb(217 105 95 / 0.16);
+  --c-ok: #73b9a9;
+  --c-ok-soft: rgb(115 185 169 / 0.14);
+  --c-focus: #f2cf9a;
+
+  /* ── Color: branches (low chroma, distinguishable, AA on bg) ─── */
+  --c-branch-0: #e9b872; /* main  — amber  */
+  --c-branch-1: #8fb3e0; /* blue           */
+  --c-branch-2: #b7a0dc; /* violet         */
+  --c-branch-3: #7fc4a8; /* teal           */
+  --c-branch-4: #dc9cb5; /* rose           */
+  --c-branch-5: #c9c27a; /* olive          */
+
+  /* ── World palette (canvas) ──────────────────────────────────── */
+  --c-world-floor: #0e1115;
+  --c-world-grid: #171b21;
+  --c-world-wall: #2a313b;
+  --c-world-object: #8fb3e0;
+  --c-world-goal: #73b9a9;
+
+  /* ── Type ─────────────────────────────────────────────────────── */
+  /* Families are injected by next/font as --font-sans/-mono/-serif. */
+  --t-12: 0.75rem;   /* micro labels, kbd     */
+  --t-13: 0.8125rem; /* dense UI, mono data   */
+  --t-15: 0.9375rem; /* body                  */
+  --t-18: 1.125rem;  /* lead                  */
+  --t-24: 1.5rem;    /* section title         */
+  --t-36: 2.25rem;   /* page title            */
+  --t-56: 3.5rem;    /* display (case study)  */
+
+  /* ── Spacing: 4px base (Tailwind's --spacing) ────────────────── */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-6: 24px;
+  --s-8: 32px;
+  --s-12: 48px;
+  --s-16: 64px;
+
+  /* ── Radius ───────────────────────────────────────────────────── */
+  --r-sm: 2px;
+  --r-md: 6px;
+  --r-lg: 10px;
+
+  /* ── Motion ───────────────────────────────────────────────────── */
+  --d-fast: 120ms;   /* hover, press           */
+  --d-base: 200ms;   /* panel, tab, toggle     */
+  --d-slow: 360ms;   /* fork, branch growth    */
+  --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.6, 0, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.4, 0.64, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --d-fast: 0ms;
+    --d-base: 0ms;
+    --d-slow: 0ms;
+  }
+}
