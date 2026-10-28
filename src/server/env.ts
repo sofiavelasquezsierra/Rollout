@@ -12,7 +12,8 @@ export function hasApiKey(): boolean {
 /** Hard caps — the client has its own, but the server is the one that matters. */
 export const LIMITS = {
   agentMaxTokens: 400,
-  evaluatorMaxTokens: 900,
+  // Sonnet runs adaptive thinking; thinking tokens count toward this cap.
+  evaluatorMaxTokens: 4000,
   agentTimeoutMs: 20_000,
   evaluatorTimeoutMs: 45_000,
   maxBodyBytes: 32_000,

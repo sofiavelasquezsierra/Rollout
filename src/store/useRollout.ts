@@ -2,6 +2,7 @@
 
 import { create } from "zustand";
 import { decide, type AgentMode } from "@/agent/decide";
+import { evaluateBranch } from "@/agent/evaluate";
 import { getLevel } from "@/sim";
 import { clearDerived, headState, stateAt } from "./derive";
 import {
@@ -70,6 +71,10 @@ interface RolloutState {
   setRenaming(id: string | null): void;
   direct(text: string): void;
   setEvaluation(id: string, e: Evaluation | null): void;
+  /** Branch ids with an evaluation request in flight. */
+  evaluating: Record<string, boolean>;
+  evaluate(id: string): Promise<void>;
+  evaluateAll(): Promise<void>;
   setCompare(pair: [string, string] | null): void;
   notify(tone: Notice["tone"], text: string): void;
   dismissNotice(): void;
@@ -111,6 +116,7 @@ export const useRollout = create<RolloutState>((set, get) => ({
   compare: null,
   notice: null,
   live: null,
+  evaluating: {},
 
   async fetchStatus() {
     try {
@@ -136,6 +142,7 @@ export const useRollout = create<RolloutState>((set, get) => ({
       freshBranchId: null,
       renamingId: null,
       compare: null,
+      evaluating: {},
       agentMode: opts.mode ?? get().agentMode,
     });
   },
@@ -254,6 +261,35 @@ export const useRollout = create<RolloutState>((set, get) => ({
 
   setEvaluation(id, e) {
     set({ run: setEvaluation(get().run, id, e) });
+  },
+
+  async evaluate(id) {
+    const { run, evaluating } = get();
+    if (evaluating[id] || !run.branches[id]) return;
+    const runId = run.id;
+    set({ evaluating: { ...get().evaluating, [id]: true } });
+    try {
+      const { evaluation, fallbackReason } = await evaluateBranch(run, id);
+      if (get().run.id !== runId) return; // a different run was loaded meanwhile
+      set({ run: setEvaluation(get().run, id, evaluation) });
+      if (fallbackReason) get().notify("info", `Claude evaluator unavailable (${fallbackReason}) — showing a heuristic score.`);
+    } catch {
+      get().notify("error", "Evaluation failed. Try again.");
+    } finally {
+      const { [id]: _done, ...rest } = get().evaluating;
+      void _done;
+      set({ evaluating: rest });
+    }
+  },
+
+  async evaluateAll() {
+    const { run } = get();
+    // Sequential: keeps us well inside the evaluator rate limit.
+    for (const id of run.order) {
+      const b = get().run.branches[id];
+      if (!b || (b.evaluation && b.evaluation.atFrame === headFrame(b))) continue;
+      await get().evaluate(id);
+    }
   },
 
   setCompare(compare) {

@@ -9,6 +9,7 @@ import { BranchGraph } from "./BranchGraph";
 import { Director } from "./Director";
 import { Inspector } from "./Inspector";
 import { BranchList } from "./BranchList";
+import { CompareView } from "./CompareView";
 import { NoticeToast } from "./NoticeToast";
 import { Timeline } from "./Timeline";
 import { Transport } from "./Transport";
@@ -28,13 +29,21 @@ export function Debugger() {
     }),
     [],
   );
-  useShortcuts(handlers);
+  const compare = useRollout((s) => s.compare);
+  useShortcuts(handlers, !compare);
 
   const run = useRollout((s) => s.run);
   const cursor = useRollout((s) => s.cursor);
   const freshId = useRollout((s) => s.freshBranchId);
   const live = useRollout((s) => s.live);
-  const { newRun, fork, fetchStatus, setPlaying } = useRollout.getState();
+  const evaluating = useRollout((s) => s.evaluating);
+  const activeBranchId = useRollout((s) => s.activeBranchId);
+  const { newRun, fork, fetchStatus, setPlaying, setCompare, evaluateAll } = useRollout.getState();
+  const openCompare = () => {
+    const other = run.order.find((id) => id !== activeBranchId);
+    if (other) setCompare([activeBranchId, other]);
+  };
+  const scoring = Object.keys(evaluating).length > 0;
   useEffect(() => {
     void fetchStatus();
   }, [fetchStatus]);
@@ -80,11 +89,23 @@ export function Debugger() {
         </select>
       </div>
 
-      <div className="grid min-h-0 grid-cols-[1fr] lg:grid-cols-[248px_1fr_340px]">
+      <div
+        className="relative grid min-h-0 grid-cols-[1fr] lg:grid-cols-[248px_1fr_340px]"
+        onKeyDown={(e) => e.key === "Escape" && compare && setCompare(null)}
+      >
+        {compare && <CompareView />}
         <aside aria-label="Branches" className="hidden min-h-0 grid-rows-[auto_minmax(120px,40%)_auto_1fr] border-r border-line lg:grid">
-          <div className="flex items-center justify-between px-4 pb-2 pt-3">
+          <div className="flex items-center gap-2 px-4 pb-2 pt-3">
             <Label>Branches</Label>
             <span className="font-mono text-12 text-ink-3">{run.order.length}</span>
+            <div className="ml-auto flex gap-1">
+              <Button size="sm" variant="ghost" icon="scale" onClick={() => void evaluateAll()} disabled={scoring} title="Score every branch with the evaluator">
+                {scoring ? "Scoring…" : "Score"}
+              </Button>
+              <Button size="sm" variant="ghost" icon="compare" onClick={openCompare} disabled={run.order.length < 2} title="Compare two branches side by side (C)">
+                Compare
+              </Button>
+            </div>
           </div>
           <div className="px-4">
             <BranchGraph />

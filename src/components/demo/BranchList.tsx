@@ -5,6 +5,7 @@ import { branchVar } from "@/lib/tokens";
 import { summarize } from "@/store/selectors";
 import { useRollout } from "@/store/useRollout";
 import { Icon } from "@/components/ui/Icon";
+import { Thinking } from "@/components/ui/primitives";
 import { ScoreChip } from "./ScoreChip";
 
 const OUTCOME_STYLE: Record<string, string> = {
@@ -18,6 +19,7 @@ export function BranchList() {
   const run = useRollout((s) => s.run);
   const activeId = useRollout((s) => s.activeBranchId);
   const renamingId = useRollout((s) => s.renamingId);
+  const evaluating = useRollout((s) => s.evaluating);
   const { setActiveBranch, rename, setRenaming } = useRollout.getState();
 
   return (
@@ -64,7 +66,13 @@ export function BranchList() {
                 </div>
               </div>
               <div className="relative z-10 flex shrink-0 items-center gap-1 pt-0.5">
-                {b.evaluation && <ScoreChip evaluation={b.evaluation} stale={b.evaluation.atFrame !== sum.head} />}
+                {evaluating[id] ? (
+                  <span className="inline-flex h-5 items-center rounded-sm border border-line-strong px-1.5 text-ink-3" aria-label="Scoring">
+                    <Thinking />
+                  </span>
+                ) : (
+                  b.evaluation && <ScoreChip evaluation={b.evaluation} stale={b.evaluation.atFrame !== sum.head} />
+                )}
                 {renamingId !== id && (
                   <button
                     type="button"
