@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { branchVar } from "@/lib/tokens";
 import { stateAt } from "@/store/derive";
 import { headFrame, lineageEvents } from "@/store/run";
@@ -113,7 +113,7 @@ function RenameField({ initial, onDone }: { initial: string; onDone: (v: string 
 }
 
 /** The agent's current thought, floating beside it in the active world. */
-export function ThoughtBubble() {
+export function ThoughtBubble({ hidden = false }: { hidden?: boolean }) {
   const run = useRollout((s) => s.run);
   const activeId = useRollout((s) => s.activeBranchId);
   const cursor = useRollout((s) => s.cursor);
@@ -126,7 +126,7 @@ export function ThoughtBubble() {
     return [...ds].reverse().find((d) => d.frame <= cursor) ?? null;
   }, [run, activeId, cursor]);
 
-  if (view === "overview") return null;
+  if (view === "overview" || hidden) return null;
   const thinking = activity.branchId === activeId && cursor >= head && (activity.status === "thinking" || activity.status === "streaming");
   const text = thinking ? activity.text : current?.reasoning;
   const s = stateAt(run, activeId, cursor);
@@ -252,10 +252,19 @@ function Rubric({ e, stale }: { e: Evaluation; stale: boolean }) {
 }
 
 /** First-visit headline that recedes once the visitor starts interacting. */
-export function HeroLine({ onWalkthrough, onHow }: { onWalkthrough: () => void; onHow: () => void }) {
-  const [gone, setGone] = useState(false);
+export function HeroLine({
+  gone,
+  onGone,
+  onWalkthrough,
+  onHow,
+}: {
+  gone: boolean;
+  onGone: () => void;
+  onWalkthrough: () => void;
+  onHow: () => void;
+}) {
   useEffect(() => {
-    const off = () => setGone(true);
+    const off = () => onGone();
     const t = window.setTimeout(off, 6500);
     window.addEventListener("keydown", off, { once: true });
     window.addEventListener("pointerdown", off, { once: true });
@@ -264,7 +273,7 @@ export function HeroLine({ onWalkthrough, onHow }: { onWalkthrough: () => void; 
       window.removeEventListener("keydown", off);
       window.removeEventListener("pointerdown", off);
     };
-  }, []);
+  }, [onGone]);
   const hidden = gone;
 
   return (

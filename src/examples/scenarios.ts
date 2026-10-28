@@ -23,10 +23,11 @@ export const SCENARIOS: Scenario[] = [
     id: "crossing-three-ways",
     title: "The Crossing — three ways across",
     description:
-      "The greedy policy cuts through the caution band. Forked at f8 with “avoid the caution zones”, and at f20 with “head straight for the dock”.",
+      "Told to take the shortest route, the robot cuts through the caution band. Forked at f8 with “avoid the caution zones”, and at f20 with “head straight for the dock”.",
     levelId: "crossing",
     focus: { branch: "careful", cursor: "fork" },
     steps: [
+      { op: "direct", branch: "main", text: "Shortest route — ignore the caution zones." },
       { op: "run", branch: "main" },
       { op: "fork", from: "main", frame: 8, as: "careful", name: "careful-route" },
       { op: "direct", branch: "careful", text: "Avoid the caution zones — no violations." },

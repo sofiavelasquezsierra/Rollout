@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { EXAMPLES } from "@/examples";
 import { HAND_FEATURE_ENABLED } from "@/hand/intent";
 import { prefersReducedMotion } from "@/lib/tokens";
@@ -36,6 +36,9 @@ export function Immersive() {
   usePlaybackLoop();
   const promptRef = useRef<HTMLInputElement>(null);
   const [handOpen, setHandOpen] = useState(false);
+  // The agent's thought bubble waits until the opening headline has faded, so they never overlap.
+  const [heroGone, setHeroGone] = useState(false);
+  const hideHero = useCallback(() => setHeroGone(true), []);
   const dialog = useRollout((s) => s.dialog);
   const setDialog = useRollout((s) => s.setDialog);
   const detailsOpen = useRollout((s) => s.detailsOpen);
@@ -70,11 +73,11 @@ export function Immersive() {
     <div className="relative h-dvh min-h-[600px] w-full overflow-hidden bg-space">
       <Stage>
         <WorldTags />
-        <ThoughtBubble />
+        <ThoughtBubble hidden={!heroGone} />
         <ScoreCards />
       </Stage>
 
-      <HeroLine onWalkthrough={() => setDialog("walkthrough")} onHow={() => setDialog("how")} />
+      <HeroLine gone={heroGone} onGone={hideHero} onWalkthrough={() => setDialog("walkthrough")} onHow={() => setDialog("how")} />
       <TopCluster onHand={() => setHandOpen((v) => !v)} handOpen={handOpen} />
 
       <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 flex justify-center px-3 pb-3 md:pb-5">

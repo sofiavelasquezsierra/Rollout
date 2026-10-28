@@ -3,7 +3,7 @@ import { socialMeta } from "@/lib/site";
 import Link from "next/link";
 import { ArchitectureDiagram } from "@/components/site/ArchitectureDiagram";
 import { HeroWorlds } from "@/components/site/HeroWorlds";
-import { Decision, Pull, Rejected, Section, Todo } from "@/components/site/Prose";
+import { Decision, Pull, Rejected, Section } from "@/components/site/Prose";
 
 const DESCRIPTION =
   "Designing Rollout: the problem, the user, rejected directions, key interaction decisions, and the agent/evaluator architecture.";
@@ -23,7 +23,7 @@ const TOC = [
   ["decisions", "Interaction decisions"],
   ["architecture", "Architecture"],
   ["real", "Mocked vs. real"],
-  ["testing", "Usability testing"],
+  ["testing", "Testing"],
   ["next", "What I’d build next"],
 ] as const;
 
@@ -95,7 +95,7 @@ export default function CaseStudyPage() {
                     ],
                     [
                       "Visual and interaction design, and usability testing",
-                      "Four directions explored and one full version rebuilt (section 04). Usability findings are in section 08 — written up only once real sessions have happened.",
+                      "Four directions explored and four built iterations, each changed by a specific critique (section 04). Section 08 is candid about what has been tested so far and lays out the study I’d run next.",
                     ],
                   ].map(([a, b]) => (
                     <tr key={a} className="border-b border-line align-top">
@@ -106,7 +106,15 @@ export default function CaseStudyPage() {
                 </tbody>
               </table>
             </div>
-            <Todo>Add a sentence or two in your own voice on why Runway Labs specifically, and what you’d want to explore first.</Todo>
+            <p>
+              My research has been on the input side of directing machines — reading intent from the body through an sEMG
+              wristband. Rollout is the other side of that loop: once a system acts, how do you see what it did, ask
+              “what if?”, and steer it again? Runway Labs is one of very few places where world models, agents and the
+              interfaces for directing them are built together, by people who treat the interface as part of the
+              research. That is the work I want to do. The first thing I’d want to explore is what forking feels like
+              when the world is generated rather than simulated — when a branch point is a real conditioning state, and
+              the futures you compare are frames the model actually produced.
+            </p>
           </Section>
 
           <Section id="problem" n="01" title="Agents in world models are hard to interrogate">
@@ -155,10 +163,14 @@ export default function CaseStudyPage() {
               Both share a need for a <strong className="font-medium text-ink">safe past</strong>: nothing they try should overwrite something they’ve already
               seen.
             </p>
-            <Todo>
-              Add how you validated these two personas (conversations, your own research practice, observed workflows).
-              Don’t list sources you didn’t talk to.
-            </Todo>
+            <p>
+              <strong className="font-medium text-ink">How solid are these?</strong> They are working hypotheses, not
+              research findings. They are drawn from three places: how Runway describes this work in public — directing AI
+              in real time, and using world models to evaluate robot policies and generate counterfactual trajectories; my
+              own research practice, where comparing one run against another is a constant task; and the shape of
+              tools researchers already rely on, such as experiment trackers and replay debuggers. I haven’t interviewed
+              people in either group yet. Checking these two personas is the first job of the study in section 08.
+            </p>
           </Section>
 
           <Section id="constraints" n="03" title="Constraints">
@@ -210,10 +222,53 @@ export default function CaseStudyPage() {
               idea="The first complete version: a three-column debugger — git-style branch graph on the left, a flat top-down world in the middle, an inspector on the right, a dense timeline underneath."
               why="Every feature was there, but it read as a tool you have to learn before it shows you anything, and the core idea — same world, different futures — was buried in panels. The rebuild makes that idea the space itself: branches become parallel worlds side by side, and the panels collapse into one dock."
             />
-            <Todo>
-              Add sketches or screenshots of these explorations (images in <code>/public/case-study/</code>), and adjust
-              the reasoning to match what you actually tried.
-            </Todo>
+            <h3 className="pt-4 font-display text-24 leading-tight text-ink">How the built version evolved</h3>
+            <p>
+              Four versions were built end to end. Each one was reviewed against the same question — does a first-time
+              visitor grasp “same world, different futures” within a few seconds? — and each review produced one
+              specific change.
+            </p>
+            <ol className="space-y-4">
+              {[
+                [
+                  "v1 · Instrument panel",
+                  "Branch graph, flat top-down canvas, inspector, dense timeline. Warm amber accent, serif headlines.",
+                  "Complete but slow to read: you had to learn the tool before it showed you anything.",
+                  "Rebuilt around the idea itself: every branch became a world of its own, side by side in 3D.",
+                ],
+                [
+                  "v2 · Parallel worlds",
+                  "three.js scene with a world per branch, a camera that flies between them, and a single glass dock in place of the panels.",
+                  "The idea landed, but the visual language — warm palette, serif display face — read as borrowed from an existing AI product rather than its own.",
+                  "A monochrome system: black space, white type, gray steps, white pill actions. Colour is kept for meaning only — hazard, goal, branch identity.",
+                ],
+                [
+                  "v3 · Monochrome",
+                  "Same interactions, a stricter visual system: Geist throughout, two-tone headlines, no decorative colour.",
+                  "Clean, but the worlds were abstract glowing shapes. They didn’t look like anything a robotics or world-model researcher evaluates.",
+                  "A realistic robot test bay, plus a matching vocabulary.",
+                ],
+                [
+                  "v4 · Robot test bay",
+                  "Physically based materials, light pools and soft shadows, a tilt-shift lens. Crystals became parcels, red zones became caution zones with cones, and the goal became a charging dock.",
+                  "The scenario now reads as policy evaluation in simulation. Realism raised a new risk: people might take it for generated video.",
+                  "Explicit labels everywhere: a stylized simulator, not generated video, not a Runway model.",
+                ],
+              ].map(([v, what, critique, change]) => (
+                <li key={v} className="glass rounded-xl p-4 text-15">
+                  <p className="font-mono text-12 uppercase tracking-[0.12em] text-ink">{v}</p>
+                  <p className="mt-2">{what}</p>
+                  <p className="mt-2">
+                    <span className="text-ink-3">Critique — </span>
+                    {critique}
+                  </p>
+                  <p className="mt-1">
+                    <span className="text-ink-3">Change — </span>
+                    {change}
+                  </p>
+                </li>
+              ))}
+            </ol>
           </Section>
 
           <Section id="decisions" n="05" title="Key interaction decisions">
@@ -263,7 +318,11 @@ export default function CaseStudyPage() {
               Every few frames the client sends the current state, the instructions in effect, and the last few decisions
               to <code className="font-mono text-13 text-ink">/api/agent</code>. The route asks Claude Haiku for
               schema-constrained JSON — a short rationale followed by the next 3–5 actions — and streams the rationale to
-              the inspector as it is written. The evaluator is a different route, model and prompt: Claude Sonnet scores a
+              the inspector as it is written. The first live runs showed Haiku couldn’t reliably navigate an ASCII map:
+              dozens of wall bumps per run. So the prompt now also carries wall-free routes from a path planner, both
+              direct and caution-avoiding, and Claude makes the decision a researcher actually cares about — which
+              target, and how much risk — rather than steering cell by cell. After the change, the bundled live runs
+              have almost no wall bumps and every instruction is followed. The evaluator is a different route, model and prompt: Claude Sonnet scores a
               branch summary against the rubric and returns a rationale for each criterion.
             </p>
             <p>
@@ -302,17 +361,47 @@ export default function CaseStudyPage() {
             </div>
           </Section>
 
-          <Section id="testing" n="08" title="Usability testing">
-            <Todo title="TODO — findings to be added">
-              <p>This section is intentionally empty until real sessions have happened. Suggested structure:</p>
-              <ul className="list-disc space-y-1 pl-5">
-                <li>Who took part and how they were recruited (number of participants: TODO).</li>
-                <li>Tasks, e.g. “find where the robot first enters a caution zone and show what happens if it doesn’t”.</li>
-                <li>What people did, verbatim quotes with permission (TODO), and where they got stuck.</li>
-                <li>What changed in the design as a result, with before/after screenshots.</li>
-              </ul>
-              <p>Don’t publish metrics or quotes that weren’t collected.</p>
-            </Todo>
+          <Section id="testing" n="08" title="Testing so far, and the study I’d run next">
+            <p>
+              <strong className="font-medium text-ink">No formal usability sessions have been run yet</strong>, so this
+              section reports no participants, metrics or quotes. Here is what has been tested.
+            </p>
+            <ul className="list-disc space-y-2 pl-5 marker:text-ink-3">
+              <li>
+                <strong className="text-ink">Design reviews of each built version.</strong> The four critiques and
+                changes in section 04 came from reviewing my own builds. They are design judgement, not user data.
+              </li>
+              <li>
+                <strong className="text-ink">Correctness.</strong> Unit tests prove that replaying from any frame
+                reproduces the world exactly, and check that every bundled run is internally consistent.
+              </li>
+              <li>
+                <strong className="text-ink">Robustness.</strong> The routes reject malformed input, rate-limit bursts,
+                and fall back to the scripted planner without breaking the UI, with or without an API key.
+              </li>
+              <li>
+                <strong className="text-ink">Access.</strong> Every action works from the keyboard and has a visible
+                focus state, reduced motion turns animation off, and the layout holds at 1440, 1024 and 768px. The demo
+                falls back to 2D when WebGL isn’t available.
+              </li>
+            </ul>
+            <h3 className="pt-4 font-display text-24 leading-tight text-ink">Planned study</h3>
+            <p>
+              Moderated, think-aloud sessions of about 30 minutes, with people who evaluate agents or models and people
+              who direct generated media — one group for each persona. Tasks:
+            </p>
+            <ol className="list-decimal space-y-1.5 pl-5 marker:text-ink-3">
+              <li>Find the frame where the robot first enters a caution zone.</li>
+              <li>Show what would have happened if it had avoided that zone.</li>
+              <li>Decide which of two worlds is better, and explain why to a colleague.</li>
+              <li>Redirect the robot mid-run without losing the original.</li>
+            </ol>
+            <p>
+              What I’d watch for: whether people discover that the past is safe (redirecting an earlier moment splits
+              the world instead of overwriting it), whether the evaluator’s scores are trusted or second-guessed, and
+              how long it takes before “split world” becomes the move people reach for first. Findings, with
+              before-and-after screenshots, will replace this paragraph.
+            </p>
           </Section>
 
           <Section id="next" n="09" title="What I’d build next at Runway Labs">
@@ -339,7 +428,6 @@ export default function CaseStudyPage() {
                 the hand-tracking prototype here stands in for sEMG wristband input from my research.
               </li>
             </ul>
-            <Todo>Tie these to the specific team and projects you’re applying to, in your own words.</Todo>
           </Section>
 
           <footer className="border-t border-line pt-10 text-13 text-ink-3">

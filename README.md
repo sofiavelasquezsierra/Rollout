@@ -92,7 +92,10 @@ the agent acts. When its plan is empty the client POSTs the state, the instructi
 effect, and the last three decisions to `/api/agent`. The route validates (zod + byte cap),
 rate-limits per IP, and calls Claude with a structured-output schema
 (`{ reasoning, actions[3..5] }`, `max_tokens` 400, 20 s timeout), streaming the reasoning
-field back as Server-Sent Events. Any failure — no key, 429, timeout, refusal, invalid JSON —
+field back as Server-Sent Events. The prompt includes an ASCII map *and* wall-free routes from
+a path planner (`routeHints` in `src/sim/scripted-policy.ts`) to every remaining target — direct
+and caution-avoiding — so Claude decides which target and how much risk, rather than navigating
+cell by cell. Without the routes, Haiku bumped into walls dozens of times per run. Any failure — no key, 429, timeout, refusal, invalid JSON —
 returns a `fallback` event and the client runs the scripted planner, labeling the decision.
 
 **Director.** An instruction is an event at the head frame and clears the pending plan, so
@@ -108,6 +111,15 @@ frame they were computed at and show as stale if the branch grows.
 **Examples.** `src/examples/scenarios.ts` describes runs as scripts (run, fork, direct);
 `record:examples` plays them through the same headless driver and writes event logs that
 ship in the bundle (~45 KB). A test re-derives every scripted decision to catch drift.
+
+## Deploying (Vercel)
+
+1. Push this repo to GitHub, then **Import Project** on vercel.com (framework: Next.js, no build overrides).
+2. In **Settings → Environment Variables** add `ANTHROPIC_API_KEY` (Production + Preview), and
+   optionally `NEXT_PUBLIC_SITE_URL` set to the final URL so Open Graph images resolve.
+3. Deploy, then check `/api/status` returns `"live": true`.
+
+Or from the CLI: `npx vercel login`, `npx vercel` (preview), `npx vercel --prod`.
 
 ## Design decisions
 
@@ -183,10 +195,9 @@ Routes were checked by hand: no key → `fallback` event; malformed JSON → 400
 
 ## Known limitations
 
-- **No live verification in this repo's history.** The Claude code paths are unit-tested at
-  their seams and were exercised through every fallback, but the bundled examples were
-  recorded with the scripted policy. Run `npm run record:examples -- --live` with a key to
-  record Claude runs.
+- **Bundled examples are live Claude recordings** (Haiku agent, Sonnet evaluator), so the
+  "replays" drift test skips them; re-recording gives different runs each time. Run
+  `npm run record:examples` without `--live` for deterministic scripted recordings.
 - **Rate limiting is in-memory.** It resets on cold start and isn't shared across serverless
   instances. A shared store (e.g. Upstash Redis) would fix this.
 - **The evaluator is an LLM judge**, not ground truth; rationales are shown so scores can

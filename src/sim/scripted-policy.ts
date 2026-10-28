@@ -1,4 +1,4 @@
-import { DELTAS, hazardAt, inHazard, isWall, manhattan } from "./geometry";
+import { DELTAS, hazardAt, inHazard, isWall, manhattan, sameVec } from "./geometry";
 import { step } from "./step";
 import type { Action, Dir, Vec, WorldState } from "./types";
 
@@ -104,6 +104,46 @@ function pathTo(s: WorldState, f: Field, to: Vec): Vec[] {
     v = f.prev[v];
   }
   return out.reverse();
+}
+
+export interface RouteHint {
+  /** "parcel o1" or "the dock". */
+  target: string;
+  /** Shortest wall-free route; `null` when unreachable. */
+  direct: { moves: Dir[]; zoneTicks: number } | null;
+  /** Route that stays out of caution zones where it can; omitted when it equals `direct`. */
+  careful?: { moves: Dir[]; zoneTicks: number };
+}
+
+/**
+ * Wall-free routes from the agent to every remaining target — what the Claude
+ * agent gets as "planner" help, so it reasons about which target and how much
+ * risk, not about reading an ASCII map cell by cell.
+ */
+export function routeHints(s: WorldState): RouteHint[] {
+  const fast = dijkstra(s, s.agent.pos, false);
+  const safe = dijkstra(s, s.agent.pos, true);
+  const route = (f: Field, to: Vec) => {
+    const path = pathTo(s, f, to);
+    if (path.length === 0 && !sameVec(s.agent.pos, to)) return null;
+    const moves: Dir[] = [];
+    let at = s.agent.pos;
+    for (const p of path) {
+      moves.push(dirBetween(at, p));
+      at = p;
+    }
+    return { moves, zoneTicks: path.filter((p) => hazardAt(s, p)).length };
+  };
+  const targets: Target[] = [
+    ...s.objects.filter((o) => !o.collected).map((o) => ({ label: `parcel ${o.id}`, pos: o.pos })),
+    { label: "the dock", pos: s.goal },
+  ];
+  return targets.map((t) => {
+    const direct = route(fast, t.pos);
+    const careful = route(safe, t.pos);
+    const same = !careful || (direct && careful.moves.join("") === direct.moves.join(""));
+    return same ? { target: t.label, direct } : { target: t.label, direct, careful: careful! };
+  });
 }
 
 function dirBetween(a: Vec, b: Vec): Dir {

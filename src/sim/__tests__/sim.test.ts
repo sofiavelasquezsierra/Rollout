@@ -10,6 +10,7 @@ import {
   isWall,
   nextRandom,
   replay,
+  routeHints,
   scriptedPolicy,
   serialize,
   step,
@@ -278,5 +279,20 @@ describe("scripted policy", () => {
   it("is deterministic", () => {
     const s = createWorld("rooms");
     expect(scriptedPolicy(s, ["avoid red"])).toEqual(scriptedPolicy(s, ["avoid red"]));
+  });
+});
+
+describe("routeHints", () => {
+  it.each(LEVELS.map((l) => l.id))("gives wall-free routes that reach every target on %s", (id) => {
+    const s0 = createWorld(id);
+    for (const h of routeHints(s0)) {
+      for (const r of [h.direct, h.careful]) {
+        if (!r) continue;
+        const end = stepMany(s0, r.moves);
+        expect(end.violations.filter((v) => v.kind === "wall")).toEqual([]);
+        if (h.target === "the dock") expect(end.agent.pos).toEqual(s0.goal);
+        else expect(end.objects.find((o) => `parcel ${o.id}` === h.target)?.collected).toBe(true);
+      }
+    }
   });
 });
