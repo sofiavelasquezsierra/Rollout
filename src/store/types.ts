@@ -6,7 +6,8 @@ import type { Action } from "@/sim";
  * initial world (see derive.ts). Forking is therefore just a new pointer.
  */
 
-export type DecisionSource = "claude" | "scripted";
+/** "hand" = teleoperation via the hand-control prototype (sEMG stand-in). */
+export type DecisionSource = "claude" | "scripted" | "hand";
 
 export interface DecisionEvent {
   kind: "decision";

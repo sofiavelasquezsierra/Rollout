@@ -155,7 +155,7 @@ function DecisionPanel() {
                     <span className="min-w-0">
                       <span className="block truncate text-12 text-ink-2">{d.reasoning}</span>
                       <span className="font-mono text-[11px] text-ink-3">
-                        {d.actions.map(arrow).join(" ")} · {d.source === "claude" ? "claude" : d.fallbackReason ? "fallback" : "scripted"}
+                        {d.actions.map(arrow).join(" ")} · {d.source === "claude" ? "claude" : d.source === "hand" ? "hand" : d.fallbackReason ? "fallback" : "scripted"}
                       </span>
                     </span>
                   </button>
@@ -186,6 +186,7 @@ function SourceBadge({ d }: { d: DecisionEvent }) {
       </Badge>
     );
   }
+  if (d.source === "hand") return <Badge tone="ok">hand · sEMG stand-in</Badge>;
   return <Badge>{d.fallbackReason ? "scripted fallback" : "scripted policy"}</Badge>;
 }
 

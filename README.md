@@ -120,11 +120,29 @@ ship in the bundle (~45 KB). A test re-derives every scripted decision to catch 
 | `zustand` | ~1 KB store for the event log and UI state; no provider boilerplate. |
 | `zod` | Validates every route input and the model's JSON output; drives structured outputs. |
 | `@anthropic-ai/sdk` | Streaming Claude calls for the agent and evaluator (server-only). |
+| `@mediapipe/tasks-vision` | Phase 2 hand tracking. Loaded with a dynamic import only after the flag is on **and** the user enables the camera; its WASM (jsDelivr, pinned 1.2.0) and model (Google storage) are fetched at that moment. |
 | `vitest` _(dev)_ | Fast unit tests for the simulator and run model. |
 | `tsx` _(dev)_ | Runs the TypeScript example recorder script. |
 
 No component library, no icon library, no animation library, no canvas/3D library.
 `next/og` (built in) renders the social card; `next/font` self-hosts the fonts.
+
+## Phase 2: hand control (feature-flagged)
+
+Set `NEXT_PUBLIC_FEATURE_HAND=1` and restart. A **Hand** button appears in the run header and
+opens a panel — clearly labeled as a stand-in for sEMG wristband input — showing the raw
+signal (mirrored camera + tracked landmarks) beside the inferred intent:
+
+| Gesture | Intent |
+|---|---|
+| Point with the index finger | Steer: N / S / E / W at the head of the branch (replaces the policy; logged as `hand` decisions) |
+| Pinch | Fork the world at the playhead (once per pinch, 1.2 s cooldown) |
+| Hold an open palm | Play / pause (after 650 ms) |
+
+The camera is strictly opt-in, frames are processed on-device, and stopping releases the
+camera. Landmark → intent mapping lives in `src/hand/intent.ts` as pure functions with a
+temporal filter, unit-tested with synthetic hands, so another sensor (e.g. an sEMG decoder)
+could produce the same `Intent` stream.
 
 ## Testing
 
@@ -133,7 +151,8 @@ immutability, drift bounds, timeout); serialize round-trip and canonical form; r
 equivalence across 15 random sequences × 9 cut points, including through serialization;
 `ReplayCache` vs. naive replay; the scripted policy solving every level under each
 instruction; run-log fork/inheritance semantics; bundled example consistency and
-reproducibility; partial-JSON reasoning extraction; rate limiter; request schemas; prompts.
+reproducibility; partial-JSON reasoning extraction; rate limiter; request schemas; prompts;
+hand-gesture classification and filtering; hand steering through the playback loop.
 
 Routes were checked by hand: no key → `fallback` event; malformed JSON → 400; bad shape →
 400 with issues; burst of 24 → 20× 200 then 429 with `Retry-After`.

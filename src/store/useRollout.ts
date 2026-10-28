@@ -4,7 +4,7 @@ import { create } from "zustand";
 import { decide, type AgentMode } from "@/agent/decide";
 import { evaluateBranch } from "@/agent/evaluate";
 import { EXAMPLES } from "@/examples";
-import { getLevel } from "@/sim";
+import { getLevel, type Dir } from "@/sim";
 import { clearDerived, headState, stateAt } from "./derive";
 import {
   activeInstructions,
@@ -56,6 +56,9 @@ interface RolloutState {
   /** Server capability, from /api/status. null = unknown yet. */
   live: { available: boolean; agentModel?: string; evaluatorModel?: string } | null;
 
+  /** Hand-control steering (Phase 2). When active, the hand drives the agent at the head. */
+  hand: { active: boolean; dir: Dir | null };
+  setHand(h: Partial<RolloutState["hand"]>): void;
   /** Which site-level dialog is open. */
   dialog: null | "how" | "walkthrough" | "shortcuts";
   setDialog(d: RolloutState["dialog"]): void;
@@ -86,6 +89,8 @@ interface RolloutState {
   dismissNotice(): void;
   tick(): void;
 }
+
+const DIR_WORD = { N: "north", S: "south", E: "east", W: "west", WAIT: "nowhere" } as const;
 
 let inflight: AbortController | null = null;
 let noticeSeq = 0;
@@ -126,6 +131,13 @@ export const useRollout = create<RolloutState>((set, get) => ({
   live: null,
   evaluating: {},
   dialog: null,
+  hand: { active: false, dir: null },
+
+  setHand(h) {
+    const hand = { ...get().hand, ...h };
+    if (h.active === false) hand.dir = null;
+    set({ hand });
+  },
 
   setDialog(dialog) {
     set({ dialog });
@@ -341,6 +353,25 @@ export const useRollout = create<RolloutState>((set, get) => ({
     const state = headState(run, id);
     if (state.outcome !== "running") {
       set({ playing: false });
+      return;
+    }
+
+    // 3a. Teleoperation: the hand steers; the agent sits out.
+    if (s.hand.active) {
+      const action = s.hand.dir ?? "WAIT";
+      let next = b.plan.length ? setPlan(run, id, []) : run;
+      const lastHand = [...b.events].reverse().find((e) => e.kind === "decision");
+      if (!lastHand || lastHand.kind !== "decision" || lastHand.source !== "hand" || lastHand.actions[0] !== action) {
+        next = addEvent(next, id, {
+          kind: "decision",
+          id: `h-${id}-${head}-${b.events.length}`,
+          frame: head,
+          source: "hand",
+          reasoning: action === "WAIT" ? "Hand: no direction — holding position." : `Hand: pointing ${DIR_WORD[action]}.`,
+          actions: [action],
+        });
+      }
+      set({ run: appendAction(next, id, action), cursor: head + 1 });
       return;
     }
 

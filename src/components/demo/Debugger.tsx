@@ -1,6 +1,8 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { HAND_FEATURE_ENABLED } from "@/hand/intent";
 import { EXAMPLES } from "@/examples";
 import { prefersReducedMotion } from "@/lib/tokens";
 import { LEVELS } from "@/sim";
@@ -24,8 +26,12 @@ import { WorldHud } from "./WorldHud";
 import { usePlaybackLoop } from "./usePlaybackLoop";
 import { useShortcuts } from "./useShortcuts";
 
+// Phase 2 — only bundled into a chunk that loads when the flag is on and the panel opens.
+const HandControl = dynamic(() => import("./HandControl").then((m) => m.HandControl), { ssr: false });
+
 export function Debugger() {
   usePlaybackLoop();
+  const [handOpen, setHandOpen] = useState(false);
   const directorRef = useRef<HTMLTextAreaElement>(null);
   const dialog = useRollout((s) => s.dialog);
   const setDialog = useRollout((s) => s.setDialog);
@@ -122,6 +128,18 @@ export function Debugger() {
           <Label className="hidden xl:inline">Agent</Label>
           <AgentModeToggle />
         </div>
+        {HAND_FEATURE_ENABLED && (
+          <Button
+            size="sm"
+            variant={handOpen ? "solid" : "quiet"}
+            icon="hand"
+            onClick={() => setHandOpen((v) => !v)}
+            aria-pressed={handOpen}
+            title="Hand control (prototype): a stand-in for sEMG wristband input"
+          >
+            Hand <span className="font-mono text-[10px] text-ink-3">beta</span>
+          </Button>
+        )}
         <Button
           variant="accent"
           size="sm"
@@ -176,6 +194,7 @@ export function Debugger() {
           {freshId && (
             <div key={freshId} aria-hidden className="pointer-events-none absolute inset-4 animate-fork-flash rounded-md ring-1 ring-accent/70" />
           )}
+          {HAND_FEATURE_ENABLED && handOpen && <HandControl onClose={() => setHandOpen(false)} />}
           <NoticeToast />
         </div>
 
