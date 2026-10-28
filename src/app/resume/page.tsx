@@ -19,8 +19,7 @@ export default function ResumePage() {
         <div>
           <p className="font-mono text-12 uppercase tracking-[0.14em] text-ink-3">Resume</p>
           <h1 className="mt-2 font-display text-36 leading-tight text-ink">
-            {/* TODO(author): your name */}
-            <span className="text-accent">TODO</span> — Design Engineer
+            <span className="text-accent">Sofia Velasquez Sierra</span> — Design Engineer
           </h1>
         </div>
         <div className="flex gap-2">

@@ -42,13 +42,7 @@ export default function CaseStudyPage() {
           have happened if…?”. Rollout is an interface for asking that question directly: scrub any rollout, fork the
           world at any frame, redirect the agent in plain language, and let a separate evaluator compare the branches.
         </p>
-        <dl className="glass mx-auto mt-10 grid max-w-3xl grid-cols-2 gap-6 rounded-2xl p-6 text-left text-13 md:grid-cols-4">
-          <Meta k="Role">
-            <span className="text-accent">TODO</span> — e.g. design + front-end, solo
-          </Meta>
-          <Meta k="Timeline">
-            <span className="text-accent">TODO</span>
-          </Meta>
+        <dl className="glass mx-auto mt-10 grid max-w-xl grid-cols-2 gap-6 rounded-2xl p-6 text-left text-13">
           <Meta k="Built with">Next.js, TypeScript, three.js, Claude API</Meta>
           <Meta k="Try it">
             <Link href="/" className="text-accent underline decoration-accent/40 underline-offset-4 hover:decoration-accent">
@@ -432,11 +426,18 @@ export default function CaseStudyPage() {
 
           <footer className="border-t border-line pt-10 text-13 text-ink-3">
             <p>
-              Built by <span className="text-accent">TODO (your name)</span>.{" "}
+              Built by <span className="text-ink">Sofia Velasquez Sierra</span>.{" "}
               <Link href="/resume" className="text-ink-2 underline decoration-line-strong underline-offset-4 hover:text-ink">
                 Resume
               </Link>{" "}
-              · <span className="text-accent">TODO (email / links)</span>
+              ·{" "}
+              <a href="mailto:sofiavs321@gmail.com" className="text-ink-2 underline decoration-line-strong underline-offset-4 hover:text-ink">
+                sofiavs321@gmail.com
+              </a>{" "}
+              ·{" "}
+              <a href="https://sofiavelasquez.me" className="text-ink-2 underline decoration-line-strong underline-offset-4 hover:text-ink">
+                sofiavelasquez.me
+              </a>
             </p>
           </footer>
         </div>
