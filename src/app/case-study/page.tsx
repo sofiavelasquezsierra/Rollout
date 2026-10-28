@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { socialMeta } from "@/lib/site";
 import Link from "next/link";
 import { ArchitectureDiagram } from "@/components/site/ArchitectureDiagram";
+import { HeroWorlds } from "@/components/site/HeroWorlds";
 import { Decision, Pull, Rejected, Section, Todo } from "@/components/site/Prose";
 
 const DESCRIPTION =
@@ -29,24 +30,25 @@ export default function CaseStudyPage() {
   return (
     <article className="mx-auto w-full max-w-[1120px] px-4 pb-24 md:px-6">
       {/* Hero */}
-      <header className="pb-14 pt-16 md:pt-24">
+      <header className="pb-10 pt-28 text-center md:pt-36">
         <p className="font-mono text-12 uppercase tracking-[0.14em] text-accent">Case study · Design engineering</p>
-        <h1 className="mt-5 max-w-4xl font-serif text-[clamp(2.5rem,6vw,4.25rem)] leading-[1.02] tracking-[-0.015em] text-ink">
-          Rollout: a debugger for agents acting in <em>generated worlds</em>
+        <HeroWorlds />
+        <h1 className="mx-auto mt-2 max-w-4xl font-serif text-[clamp(2.5rem,6vw,4.25rem)] leading-[1.02] tracking-[-0.015em] text-ink">
+          Rollout: parallel worlds for <em className="text-accent">debugging agents</em>
         </h1>
-        <p className="mt-6 max-w-2xl text-18 leading-relaxed text-ink-2">
+        <p className="mx-auto mt-6 max-w-2xl text-18 leading-relaxed text-ink-2">
           When an agent acts inside a world model, the interesting question is rarely “what happened?” — it’s “what would
           have happened if…?”. Rollout is an interface for asking that question directly: scrub any rollout, fork the
           world at any frame, redirect the agent in plain language, and let a separate evaluator compare the branches.
         </p>
-        <dl className="mt-10 grid max-w-3xl grid-cols-2 gap-6 border-t border-line pt-6 text-13 md:grid-cols-4">
+        <dl className="glass mx-auto mt-10 grid max-w-3xl grid-cols-2 gap-6 rounded-2xl p-6 text-left text-13 md:grid-cols-4">
           <Meta k="Role">
             <span className="text-accent">TODO</span> — e.g. design + front-end, solo
           </Meta>
           <Meta k="Timeline">
             <span className="text-accent">TODO</span>
           </Meta>
-          <Meta k="Built with">Next.js, TypeScript, Canvas 2D, Claude API</Meta>
+          <Meta k="Built with">Next.js, TypeScript, three.js, Claude API</Meta>
           <Meta k="Try it">
             <Link href="/" className="text-accent underline decoration-accent/40 underline-offset-4 hover:decoration-accent">
               Open the demo →
@@ -151,7 +153,12 @@ export default function CaseStudyPage() {
             <Rejected
               name="Canvas of state thumbnails"
               idea="An infinite canvas where every decision is a node with a world thumbnail, laid out as a tree you pan and zoom."
-              why="Excellent overview, poor instrument. Fine-grained scrubbing — the most frequent action — needs a linear axis. The tree survived, reduced to a compact git-style branch graph beside the world."
+              why="Excellent overview, poor instrument. Fine-grained scrubbing — the most frequent action — needs a linear axis, and a tree of thumbnails hides that every branch is the same world at a different moment."
+            />
+            <Rejected
+              name="Instrument-panel dashboard (built, then replaced)"
+              idea="The first complete version: a three-column debugger — git-style branch graph on the left, a flat top-down world in the middle, an inspector on the right, a dense timeline underneath."
+              why="Every feature was there, but it read as a tool you have to learn before it shows you anything, and the core idea — same world, different futures — was buried in panels. The rebuild makes that idea the space itself: branches become parallel worlds side by side, and the panels collapse into one dock."
             />
             <Todo>
               Add sketches or screenshots of these explorations (images in <code>/public/case-study/</code>), and adjust
@@ -163,33 +170,33 @@ export default function CaseStudyPage() {
             <div className="space-y-4">
               <Decision
                 title="Redirecting the past forks; it never rewrites"
-                chose="If the playhead is behind the head of a branch, a director instruction creates a new branch at that frame and applies the instruction there. The button label changes to “Fork + redirect” before you commit."
+                chose="If the playhead is in the past, telling the agent something first splits a new world at that frame and applies the instruction there. The prompt’s button reads “Split + tell” before you commit."
                 tradeoff="More branches accumulate. In exchange, history is immutable: every frame you have seen stays reachable, which is what makes comparisons trustworthy."
               />
               <Decision
                 title="Play at the head means “keep going”"
-                chose="One transport. Pressing play replays recorded frames; when the playhead reaches the head of an unfinished branch, the agent starts acting and the timeline grows."
+                chose="One transport. Pressing play replays recorded frames; when the playhead reaches the head of an unfinished branch, the agent starts acting and the time arc grows."
                 tradeoff="Generating is implicit, and live calls cost money. The status line switches to “● live”, decisions are labeled by source, and steps are capped per branch."
               />
               <Decision
-                title="Switching branches keeps the frame"
-                chose="Jumping to another branch with [ / ] keeps the playhead where it is (clamped to the branch’s length)."
-                tradeoff="You can land on a frame where nothing interesting is happening on the other branch — but “same moment, other choice” becomes a single keystroke."
+                title="Every world lives at the same moment"
+                chose="All worlds are always shown at the same frame. Scrubbing moves them together; [ / ] flies the camera between them; O pulls back to see them all."
+                tradeoff="Worlds that already finished sit still while others keep going — but “same moment, other choice” is visible without any interaction."
               />
               <Decision
-                title="Other branches as ghosts, in place"
-                chose="Sibling branches draw as dashed paths on the world canvas, from the point where they diverge."
-                tradeoff="Visual noise grows with branch count; ghosts are low-contrast and dashed so the active path always dominates."
+                title="Branches are places, not rows"
+                chose="Each branch is its own glowing world floating beside its parent; splitting visibly pushes a new world out of the old one, and the camera follows it."
+                tradeoff="Space is finite: past five or six worlds the overview gets small. The focus view keeps the active world large, with neighbours peeking in at the edges."
               />
               <Decision
                 title="Evaluation is a separate act, and it can go stale"
-                chose="Scores come from a separate evaluator call against a fixed rubric (progress, efficiency, safety), shown per branch. If a branch grows after it was scored, its chip turns dashed."
+                chose="Scores come from a separate evaluator call against a fixed rubric (progress, efficiency, safety). In the overview, a scorecard floats under each world; a score is marked stale if its world grows after scoring."
                 tradeoff="An extra step before comparing, and an LLM judge is not ground truth — so rationales are always visible next to the numbers."
               />
               <Decision
                 title="Instructions are events on the timeline"
-                chose="A director instruction is an amber diamond at the frame where it took effect, inherited by branches forked later — not a message in a sidebar."
-                tradeoff="There is no free-form back-and-forth with the agent; the agent explains itself through one-sentence rationales per decision instead."
+                chose="An instruction is an amber diamond on the time arc where it took effect, inherited by worlds split later. The agent answers in a thought bubble floating beside it in the world."
+                tradeoff="There is no free-form back-and-forth with the agent; it explains itself through one-sentence rationales per decision instead."
               />
             </div>
           </Section>
@@ -297,7 +304,7 @@ export default function CaseStudyPage() {
         </div>
 
         <nav aria-label="On this page" className="hidden lg:block">
-          <div className="sticky top-20">
+          <div className="sticky top-24">
             <p className="font-mono text-12 uppercase tracking-[0.14em] text-ink-3">On this page</p>
             <ol className="mt-3 space-y-1.5 text-13">
               {TOC.map(([id, label], i) => (

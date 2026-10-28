@@ -25,7 +25,7 @@ export function ResumeViewer() {
         data={`${SRC}#view=FitH`}
         type="application/pdf"
         aria-label="Resume (PDF)"
-        className="h-[min(1100px,calc(100dvh-220px))] min-h-[560px] w-full rounded-lg border border-line bg-surface-1"
+        className="glass h-[min(1100px,calc(100dvh-220px))] min-h-[560px] w-full rounded-2xl"
       >
         <div className="flex h-full flex-col items-center justify-center gap-3 p-8 text-center text-13 text-ink-2">
           <p>Your browser can’t display PDFs inline.</p>
@@ -38,7 +38,7 @@ export function ResumeViewer() {
   }
 
   return (
-    <div className="flex min-h-[420px] flex-col items-center justify-center gap-3 rounded-lg border border-dashed border-line-strong bg-surface-1 p-8 text-center">
+    <div className="glass flex min-h-[420px] flex-col items-center justify-center gap-3 rounded-2xl border-dashed p-8 text-center">
       <Icon name="download" size={20} className="text-ink-3" />
       <p className="font-mono text-12 uppercase tracking-[0.14em] text-ink-3">
         {state === "checking" ? "Loading resume…" : "Resume coming soon"}

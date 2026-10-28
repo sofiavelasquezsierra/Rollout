@@ -50,6 +50,9 @@
   --radius-sm: var(--r-sm);
   --radius-md: var(--r-md);
   --radius-lg: var(--r-lg);
+  --radius-xl: var(--r-xl);
+  --radius-2xl: var(--r-2xl);
+  --radius-3xl: var(--r-3xl);
   --radius-full: 9999px;
 
   --ease-out: var(--ease-out);

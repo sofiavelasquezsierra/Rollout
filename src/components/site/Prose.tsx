@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 
 export function Section({ id, n, title, children }: { id: string; n: string; title: string; children: ReactNode }) {
   return (
-    <section id={id} aria-labelledby={`${id}-h`} className="scroll-mt-20 border-t border-line py-14 first:border-t-0">
+    <section id={id} aria-labelledby={`${id}-h`} className="scroll-mt-24 border-t border-[var(--c-glass-line)] py-14 first:border-t-0">
       <div className="grid gap-x-10 gap-y-4 md:grid-cols-[160px_1fr]">
         <p className="font-mono text-12 uppercase tracking-[0.14em] text-ink-3 md:pt-3">{n}</p>
         <div className="min-w-0">
@@ -33,7 +33,7 @@ export function Todo({ children, title = "TODO" }: { children: ReactNode; title?
 
 export function Decision({ title, chose, tradeoff, children }: { title: string; chose: string; tradeoff: string; children?: ReactNode }) {
   return (
-    <div className="rounded-lg border border-line bg-surface-1 p-5">
+    <div className="glass rounded-2xl p-5">
       <h3 className="text-18 font-medium text-ink">{title}</h3>
       <dl className="mt-3 grid gap-3 text-13 leading-relaxed md:grid-cols-2">
         <div>

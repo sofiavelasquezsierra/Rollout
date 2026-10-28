@@ -1,8 +1,9 @@
 # Rollout
 
-A debugger for an AI agent acting in a simulated world. Watch the agent act, scrub the
-timeline, fork the world at any frame, redirect the agent in natural language, inspect its
-reasoning, and compare branches scored by a separate evaluator.
+A debugger for an AI agent acting in a simulated world, designed as an immersive space:
+every branch of a rollout is a glowing **parallel world** floating side by side, shown at the
+same moment. Scrub time, split the world at any frame, tell the agent what to do, read its
+thoughts beside it, and pull back to compare worlds scored by a separate evaluator.
 
 It's one link with three pages: **`/`** the demo, **`/case-study`** the design write-up, and
 **`/resume`** the resume viewer.
@@ -54,7 +55,8 @@ src/
   agent/        client decide() (scripted | Claude via SSE), evaluation, headless driver
   server/       server-only: env, prompts, zod schemas, rate limiter, Claude calls
   app/api/      /agent (SSE), /evaluate, /status
-  components/   demo/ (debugger UI), site/ (nav, case study, resume), ui/ (primitives)
+  components/   immersive/ (three.js scene + glass HUD), demo/ (inspector, 2D fallback, hooks,
+                hand control), site/ (nav, case study, resume), ui/ (primitives)
   examples/     scenario scripts + recorded runs (JSON)
   styles/       design tokens
 ```
@@ -69,6 +71,14 @@ across a serialize/deserialize boundary — equals a full replay) over many rand
 instructions. World state is never stored — `stateAt(run, branch, frame)` replays the
 branch's lineage through a `ReplayCache` that keeps a snapshot every 16 frames. Forking is
 adding a pointer; rename and jump touch metadata only.
+
+**The view.** `WorldScene` (three.js) renders one diorama per branch — instanced walls,
+glowing crystals, translucent drifting red volumes, a goal ring and beam, the agent orb with a
+halo and bead trail — with bloom and fog over a starfield. All worlds show the same frame;
+the camera eases to the active world or pulls back for the overview. `Stage` drives the
+scene from the store every animation frame and positions HTML elements pinned to 3D anchors
+(world tags, the agent's thought bubble, scorecards) imperatively, so React renders only when
+content changes. Without WebGL the existing Canvas 2D renderer takes over.
 
 **Agent loop.** Pressing play replays recorded frames; at the head of an unfinished branch
 the agent acts. When its plan is empty the client POSTs the state, the instructions in
@@ -94,22 +104,26 @@ ship in the bundle (~45 KB). A test re-derives every scripted decision to catch 
 
 ## Design decisions
 
-- **Time is the primary axis.** Timeline + scrubber are the main instrument; branches are a
-  compact git-style graph, not a canvas of thumbnails.
-- **History is immutable.** Redirecting from the past forks. Switching branches keeps the
-  playhead so “same moment, other choice” is one keystroke (`[` / `]`).
+- **Branches are places.** Each branch is a world you can see; forking splits a new world
+  out of its parent. All worlds share one clock, so “same moment, other choice” needs no
+  interaction. (A first, dashboard-style version was built and replaced — see the case study.)
+- **One dock.** Prompt, play, the time arc and “Split world” are the whole default UI; the
+  full inspector lives in a details drawer (I).
+- **History is immutable.** Telling the agent something in the past splits a new world.
 - **Honest labels everywhere.** Each decision shows its source (Claude model + latency,
   scripted, or fallback with the reason); examples say how they were recorded; the
   “How this works” dialog states what is simulated.
+- **Glass over space.** Frosted `glass` panels float over the scene; tokens add `--c-space`,
+  `--c-glass*` and `--c-glow`.
 - **Tokens first.** `src/styles/tokens.css` defines color, type, spacing, radius and motion;
   Tailwind's default palette and type scale are disabled so only token utilities exist.
   Canvas reads the same CSS variables through `src/lib/tokens.ts`.
 - **Type.** Instrument Sans (UI), JetBrains Mono (data), Instrument Serif (editorial).
-- **Motion with purpose.** Fork flash, branch growth, playhead and agent tweening; all
-  durations come from tokens and drop to zero under `prefers-reduced-motion` (which also
-  disables the first-visit autoplay and the canvas tweening).
-- **Keyboard.** Space play/pause · ←/→ step (⇧ ×10) · Home/End · F fork · R rename ·
-  [ ] switch branch · / director · C compare · ? shortcuts. Ignored while typing.
+- **Motion with purpose.** Worlds split apart, the camera flies, the agent glides; under
+  `prefers-reduced-motion` the camera snaps, idle drift and bobbing stop, and the first-visit
+  autoplay is skipped.
+- **Keyboard.** Space play/pause · ←/→ step (⇧ ×10) · Home/End · F split world · R rename ·
+  [ ] fly between worlds · / talk to the agent · O overview · I details · ? shortcuts.
 
 ## Dependencies
 
@@ -117,6 +131,7 @@ ship in the bundle (~45 KB). A test re-derives every scripted decision to catch 
 |---|---|
 | `next`, `react`, `react-dom` | App Router pages + server route handlers that hold the API key. |
 | `tailwindcss` | Utility CSS generated from our own design tokens; default palette disabled. |
+| `three` | WebGL scene for the parallel worlds (imperative; postprocessing bloom from its bundled examples). Loaded only by the demo page. No react-three-fiber — the scene is one class driven by the store. |
 | `zustand` | ~1 KB store for the event log and UI state; no provider boilerplate. |
 | `zod` | Validates every route input and the model's JSON output; drives structured outputs. |
 | `@anthropic-ai/sdk` | Streaming Claude calls for the agent and evaluator (server-only). |
@@ -124,7 +139,7 @@ ship in the bundle (~45 KB). A test re-derives every scripted decision to catch 
 | `vitest` _(dev)_ | Fast unit tests for the simulator and run model. |
 | `tsx` _(dev)_ | Runs the TypeScript example recorder script. |
 
-No component library, no icon library, no animation library, no canvas/3D library.
+No component library, no icon library, no animation library, no React 3D wrapper.
 `next/og` (built in) renders the social card; `next/font` self-hosts the fonts.
 
 ## Phase 2: hand control (feature-flagged)
@@ -170,6 +185,8 @@ Routes were checked by hand: no key → `fallback` event; malformed JSON → 400
 - **The world is a toy.** 24×16 grid, discrete actions, one agent. It exists to make the
   interface ideas testable, not to model anything.
 - **State lives in the tab.** Runs are not persisted or shareable by URL yet.
+- **GPU cost.** Bloom and one diorama per branch are fine on laptops; very old GPUs may drop
+  frames. No WebGL → the 2D renderer is used automatically.
 - **Tablet is the floor.** Layout is designed down to 768 px; phones get a usable but
   cramped stacked view.
 - **Hand control (Phase 2)** depends on webcam access and lighting, and is a stand-in for

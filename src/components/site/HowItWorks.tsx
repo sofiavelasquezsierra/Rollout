@@ -17,7 +17,7 @@ export function HowItWorks() {
 
       <dl className="space-y-4">
         <Row title="The world" tag="stylized simulator">
-          A 24×16 gridworld simulated in TypeScript in your browser — <strong className="text-ink">not a Runway model</strong> and
+          A 24×16 gridworld simulated in TypeScript in your browser and drawn in 3D with three.js — <strong className="text-ink">not a Runway model</strong> and
           not a learned world model. It is fully deterministic (seeded RNG stored in the state), so any frame can be
           serialized, forked and replayed to an identical result.
         </Row>
@@ -38,7 +38,7 @@ export function HowItWorks() {
         </Row>
       </dl>
 
-      <div className="flex items-center gap-2 rounded-md border border-line p-3">
+      <div className="flex items-center gap-2 rounded-xl border border-[var(--c-glass-line)] p-3">
         <span
           className={`size-2 rounded-full ${live === null ? "bg-ink-3" : live.available ? "bg-ok" : "bg-hazard/70"}`}
           aria-hidden

@@ -1,11 +1,11 @@
 /** Agent / evaluator architecture, drawn with tokens so it matches the app. */
 export function ArchitectureDiagram() {
-  const box = "rounded-md border border-line-strong bg-surface-2 px-3 py-2.5";
+  const box = "rounded-xl border border-[var(--c-glass-line)] bg-white/[0.03] px-3 py-2.5";
   return (
     <figure className="not-prose my-2">
-      <div className="grid gap-3 rounded-lg border border-line bg-surface-1 p-4 text-13 md:grid-cols-[1.25fr_auto_1fr] md:items-stretch">
-        <div className="space-y-2 rounded-md border border-line p-3">
-          <p className="font-mono text-12 uppercase tracking-[0.12em] text-ink-3">Browser</p>
+      <div className="glass grid gap-3 rounded-2xl p-4 text-13 md:grid-cols-[1.25fr_auto_1fr] md:items-stretch">
+        <div className="space-y-2 rounded-xl border border-[var(--c-glass-line)] p-3">
+          <p className="font-mono text-12 uppercase tracking-[0.12em] text-ink-3">Browser (simulation + 3D view)</p>
           <div className={box}>
             <p className="text-ink">Simulator</p>
             <p className="text-12 text-ink-3">pure step(state, action) · seeded RNG in state</p>
@@ -31,7 +31,7 @@ export function ArchitectureDiagram() {
           <span className="text-accent">← rubric scores</span>
         </div>
 
-        <div className="space-y-2 rounded-md border border-line p-3">
+        <div className="space-y-2 rounded-xl border border-[var(--c-glass-line)] p-3">
           <p className="font-mono text-12 uppercase tracking-[0.12em] text-ink-3">Server routes (hold the key)</p>
           <div className={`${box} border-accent/40`}>
             <p className="text-ink">/api/agent</p>

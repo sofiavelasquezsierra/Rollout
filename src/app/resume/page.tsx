@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 
 export default function ResumePage() {
   return (
-    <section className="mx-auto w-full max-w-5xl px-4 pb-16 pt-10 md:px-6">
+    <section className="mx-auto w-full max-w-5xl px-4 pb-16 pt-28 md:px-6">
       <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
         <div>
           <p className="font-mono text-12 uppercase tracking-[0.14em] text-ink-3">Resume</p>
@@ -28,14 +28,14 @@ export default function ResumePage() {
             href="/resume.pdf"
             target="_blank"
             rel="noopener"
-            className="inline-flex h-10 items-center gap-2 rounded-md border border-line-strong px-4 text-13 text-ink t-fast transition-colors hover:bg-surface-2"
+            className="glass inline-flex h-10 items-center gap-2 rounded-full px-4 text-13 text-ink t-fast transition-colors hover:bg-white/5"
           >
             Open in new tab
           </a>
           <a
             href="/resume.pdf"
             download
-            className="inline-flex h-10 items-center gap-2 rounded-md bg-accent px-5 text-15 font-medium text-accent-ink t-fast transition-[filter] hover:brightness-110"
+            className="inline-flex h-10 items-center gap-2 rounded-full bg-accent px-5 text-15 font-medium text-accent-ink shadow-[0_0_30px_var(--c-glow)] t-fast transition-[filter] hover:brightness-110"
           >
             <Icon name="download" /> Download PDF
           </a>

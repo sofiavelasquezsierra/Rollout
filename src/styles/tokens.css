@@ -78,6 +78,9 @@
   --r-sm: 2px;
   --r-md: 6px;
   --r-lg: 10px;
+  --r-xl: 14px;   /* glass cards */
+  --r-2xl: 18px;  /* glass panels */
+  --r-3xl: 26px;  /* dock, drawer, dialogs */
 
   /* ── Motion ───────────────────────────────────────────────────── */
   --d-fast: 120ms;   /* hover, press           */

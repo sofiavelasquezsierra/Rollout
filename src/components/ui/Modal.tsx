@@ -43,13 +43,13 @@ export function Modal({
         (opener.current as HTMLElement | null)?.focus?.();
       }}
       onClick={(e) => e.target === e.currentTarget && onClose()}
-      className={`m-auto w-[calc(100%-32px)] rounded-lg border border-line-strong bg-surface-1 p-0 text-ink shadow-[0_24px_80px_rgb(0_0_0/0.55)] backdrop:bg-[rgb(5_6_8/0.72)] backdrop:backdrop-blur-sm open:animate-rise-in ${
+      className={`glass-strong m-auto w-[calc(100%-32px)] rounded-3xl p-0 text-ink shadow-[0_24px_80px_rgb(0_0_0/0.55)] backdrop:bg-[rgb(5_6_8/0.72)] backdrop:backdrop-blur-sm open:animate-rise-in ${
         wide ? "max-w-3xl" : "max-w-xl"
       }`}
     >
       {open && (
         <div className="max-h-[85dvh] overflow-y-auto">
-          <div className="sticky top-0 z-10 flex items-center justify-between border-b border-line bg-surface-1/95 px-5 py-3 backdrop-blur">
+          <div className="sticky top-0 z-10 flex items-center justify-between border-b border-[var(--c-glass-line)] px-5 py-3">
             <h2 id="modal-title" className="text-15 font-medium">
               {title}
             </h2>
