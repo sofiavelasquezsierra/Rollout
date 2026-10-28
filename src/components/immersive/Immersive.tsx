@@ -102,7 +102,7 @@ export function Immersive() {
       <Modal open={dialog === "how"} onClose={() => setDialog(null)} title="How this works" wide>
         <HowItWorks />
       </Modal>
-      <Modal open={dialog === "walkthrough"} onClose={() => setDialog(null)} title="60-second walkthrough" wide>
+      <Modal open={dialog === "walkthrough"} onClose={() => setDialog(null)} title="Walkthrough" wide>
         <Walkthrough />
       </Modal>
     </div>

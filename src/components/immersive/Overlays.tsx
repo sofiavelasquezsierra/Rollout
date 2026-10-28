@@ -293,7 +293,7 @@ export function HeroLine({
       <div className="pointer-events-auto mt-4 flex justify-center gap-2">
         <button type="button" onClick={onWalkthrough} className="glass inline-flex h-9 items-center gap-2 rounded-full pl-1.5 pr-4 text-13 text-ink hover:bg-white/5">
           <span className="flex size-6 items-center justify-center rounded-full bg-accent text-[10px] text-accent-ink">▶</span>
-          60-second walkthrough
+          Watch the walkthrough
         </button>
         <button type="button" onClick={onHow} className="glass inline-flex h-9 items-center rounded-full px-4 text-13 text-ink-2 hover:bg-white/5 hover:text-ink">
           How this works

@@ -42,8 +42,7 @@ rollouts use the scripted policy, and scores come from a labeled heuristic.
 
 ### Assets you add
 
-- `public/resume.pdf` — the resume page shows a designed placeholder until it exists.
-- `public/walkthrough.mp4` (+ optional `public/walkthrough.vtt`) — the walkthrough modal does the same.
+- `public/resume.pdf` — the resume shown on `/resume`. The walkthrough is a Loom embed (`src/components/site/Walkthrough.tsx`).
 - Case study `TODO` blocks — role, timeline, name, usability findings, sketches.
 
 ## Architecture

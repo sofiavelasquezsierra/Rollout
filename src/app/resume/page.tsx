@@ -33,7 +33,7 @@ export default function ResumePage() {
           </a>
           <a
             href="/resume.pdf"
-            download
+            download="Sofia_Velasquez_Sierra_Resume.pdf"
             className="inline-flex h-10 items-center gap-2 rounded-full bg-accent px-5 text-15 font-medium text-accent-ink shadow-[0_0_30px_var(--c-glow)] t-fast transition-[filter] hover:brightness-110"
           >
             <Icon name="download" /> Download PDF
