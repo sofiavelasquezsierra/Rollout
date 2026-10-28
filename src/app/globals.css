@@ -26,9 +26,8 @@
   --color-transparent: transparent;
   --color-current: currentColor;
 
-  --font-sans: var(--font-instrument-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
-  --font-serif: var(--font-instrument-serif), ui-serif, Georgia, serif;
+  --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
 
   --text-*: initial;
   --text-12: var(--t-12);
@@ -102,6 +101,7 @@
     font-family: var(--font-sans);
     font-size: var(--t-15);
     line-height: 1.55;
+    letter-spacing: -0.006em;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
   }
@@ -146,21 +146,28 @@
 }
 
 @utility glow-accent {
-  box-shadow: 0 0 0 1px rgb(233 184 114 / 0.5), 0 0 24px var(--c-glow);
+  box-shadow: 0 0 0 1px rgb(255 255 255 / 0.5), 0 0 24px var(--c-glow);
 }
 
 /* Faint starfield for non-3D pages. */
 @utility bg-space {
   background-color: var(--c-space);
   background-image:
-    radial-gradient(1px 1px at 12% 18%, rgb(170 190 230 / 0.5), transparent 60%),
-    radial-gradient(1px 1px at 72% 34%, rgb(170 190 230 / 0.4), transparent 60%),
-    radial-gradient(1.5px 1.5px at 38% 72%, rgb(170 190 230 / 0.35), transparent 60%),
-    radial-gradient(1px 1px at 88% 82%, rgb(170 190 230 / 0.45), transparent 60%),
-    radial-gradient(1px 1px at 54% 8%, rgb(170 190 230 / 0.35), transparent 60%),
-    radial-gradient(900px 600px at 80% -10%, rgb(143 179 224 / 0.10), transparent 70%),
-    radial-gradient(700px 500px at 0% 110%, rgb(233 184 114 / 0.07), transparent 70%);
+    radial-gradient(1px 1px at 12% 18%, rgb(255 255 255 / 0.5), transparent 60%),
+    radial-gradient(1px 1px at 72% 34%, rgb(255 255 255 / 0.4), transparent 60%),
+    radial-gradient(1.5px 1.5px at 38% 72%, rgb(255 255 255 / 0.35), transparent 60%),
+    radial-gradient(1px 1px at 88% 82%, rgb(255 255 255 / 0.45), transparent 60%),
+    radial-gradient(1px 1px at 54% 8%, rgb(255 255 255 / 0.35), transparent 60%),
+    radial-gradient(900px 600px at 80% -10%, rgb(255 255 255 / 0.06), transparent 70%),
+    radial-gradient(700px 500px at 0% 110%, rgb(255 255 255 / 0.03), transparent 70%);
   background-size: 340px 340px, 420px 420px, 520px 520px, 380px 380px, 460px 460px, 100% 100%, 100% 100%;
+}
+
+/* Large, tight display type. */
+@utility font-display {
+  font-family: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  font-weight: 500;
+  letter-spacing: -0.035em;
 }
 
 @utility tabular {

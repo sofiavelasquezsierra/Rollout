@@ -33,8 +33,8 @@ export default function CaseStudyPage() {
       <header className="pb-10 pt-28 text-center md:pt-36">
         <p className="font-mono text-12 uppercase tracking-[0.14em] text-accent">Case study · Design engineering</p>
         <HeroWorlds />
-        <h1 className="mx-auto mt-2 max-w-4xl font-serif text-[clamp(2.5rem,6vw,4.25rem)] leading-[1.02] tracking-[-0.015em] text-ink">
-          Rollout: parallel worlds for <em className="text-accent">debugging agents</em>
+        <h1 className="mx-auto mt-2 max-w-4xl font-display text-[clamp(2.5rem,6vw,4.5rem)] leading-[1.0] text-ink">
+          Rollout: parallel worlds <span className="text-ink-3">for debugging agents</span>
         </h1>
         <p className="mx-auto mt-6 max-w-2xl text-18 leading-relaxed text-ink-2">
           When an agent acts inside a world model, the interesting question is rarely “what happened?” — it’s “what would
@@ -68,7 +68,7 @@ export default function CaseStudyPage() {
             </p>
             <p>
               That loop is slow, and it hides the structure of the question being asked. Debugging an agent in a world is
-              counterfactual by nature: <em>same world, same moment, different choice.</em> The interface should make
+              counterfactual by nature: <strong className="font-medium text-ink">same world, same moment, different choice.</strong> The interface should make
               that the primitive, not an afterthought.
             </p>
             <Pull>Time is the primary axis. Branching is the primary verb.</Pull>
@@ -102,7 +102,7 @@ export default function CaseStudyPage() {
               light”), keep the takes they like, and compare versions side by side without losing any of them.
             </p>
             <p>
-              Both share a need for a <em>safe past</em>: nothing they try should overwrite something they’ve already
+              Both share a need for a <strong className="font-medium text-ink">safe past</strong>: nothing they try should overwrite something they’ve already
               seen.
             </p>
             <Todo>
@@ -195,7 +195,7 @@ export default function CaseStudyPage() {
               />
               <Decision
                 title="Instructions are events on the timeline"
-                chose="An instruction is an amber diamond on the time arc where it took effect, inherited by worlds split later. The agent answers in a thought bubble floating beside it in the world."
+                chose="An instruction is a diamond marker on the time arc where it took effect, inherited by worlds split later. The agent answers in a thought bubble floating beside it in the world."
                 tradeoff="There is no free-form back-and-forth with the agent; it explains itself through one-sentence rationales per decision instead."
               />
             </div>

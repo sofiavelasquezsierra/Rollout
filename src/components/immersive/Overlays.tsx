@@ -274,8 +274,8 @@ export function HeroLine({ onWalkthrough, onHow }: { onWalkthrough: () => void; 
       }`}
       aria-hidden={hidden}
     >
-      <h1 className="font-serif text-[clamp(1.9rem,3.4vw,2.75rem)] leading-[1.05] tracking-[-0.01em] text-ink [text-shadow:0_2px_30px_rgb(0_0_0/0.8)]">
-        What if the agent had chosen <em className="text-accent">differently?</em>
+      <h1 className="font-display text-[clamp(1.9rem,3.6vw,3rem)] leading-[1.02] text-ink [text-shadow:0_2px_30px_rgb(0_0_0/0.8)]">
+        What if the agent had chosen <span className="text-ink-3">differently?</span>
       </h1>
       <p className="mx-auto mt-3 max-w-md text-15 text-ink-2 [text-shadow:0_1px_16px_rgb(0_0_0/0.9)]">
         Split the world at any moment, tell the agent what to do, and watch the futures side by side.

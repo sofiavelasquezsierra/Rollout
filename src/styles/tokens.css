@@ -8,51 +8,54 @@
 :root {
   color-scheme: dark;
 
+  /* Monochrome system: black space, white type, gray steps; colour is
+     reserved for meaning (hazard, goal, branch identity). */
+
   /* ── Color: space + glass (immersive layer) ─────────────────── */
-  --c-space: #04050a;       /* the void the worlds float in */
-  --c-glass: rgb(14 18 26 / 0.58);
-  --c-glass-strong: rgb(14 18 26 / 0.82);
-  --c-glass-line: rgb(190 210 255 / 0.10);
-  --c-glass-hi: rgb(255 255 255 / 0.07); /* inner top highlight */
-  --c-glow: rgb(233 184 114 / 0.45);
+  --c-space: #000000;       /* the void the worlds float in */
+  --c-glass: rgb(12 12 12 / 0.74);
+  --c-glass-strong: rgb(12 12 12 / 0.9);
+  --c-glass-line: rgb(255 255 255 / 0.09);
+  --c-glass-hi: rgb(255 255 255 / 0.04); /* inner top highlight */
+  --c-glow: rgb(255 255 255 / 0.22);
 
   /* ── Color: surfaces ─────────────────────────────────────────── */
-  --c-bg: #07080d;          /* page */
-  --c-surface-1: #101318;   /* panels */
-  --c-surface-2: #151920;   /* raised: inputs, cards */
-  --c-surface-3: #1c2129;   /* hover / selected */
-  --c-line: #20262e;        /* hairlines */
-  --c-line-strong: #2d343e; /* emphasized borders */
+  --c-bg: #000000;          /* page */
+  --c-surface-1: #0c0c0c;   /* panels */
+  --c-surface-2: #141414;   /* raised: inputs, cards */
+  --c-surface-3: #1f1f1f;   /* hover / selected */
+  --c-line: #1f1f1f;        /* hairlines */
+  --c-line-strong: #333333; /* emphasized borders */
 
-  /* ── Color: ink (all AA on --c-bg and --c-surface-1) ─────────── */
-  --c-ink: #e7e9ec;         /* primary text  ~15.8:1 */
-  --c-ink-2: #a4abb5;       /* secondary     ~8.1:1  */
-  --c-ink-3: #868f9b;       /* tertiary      ~5.8:1 (≥4.5 on every surface) */
+  /* ── Color: ink (AA on every surface) ─────────────────────────── */
+  --c-ink: #ffffff;         /* primary text  21:1 on black */
+  --c-ink-2: #a6a6a6;       /* secondary     ~8.6:1 */
+  --c-ink-3: #8c8c8c;       /* tertiary      ~6.3:1 on black, ≥4.9 on surface-3 */
 
   /* ── Color: signal ───────────────────────────────────────────── */
-  --c-accent: #e9b872;      /* phosphor amber — the only accent */
-  --c-accent-ink: #1a1408;  /* text on accent */
-  --c-accent-soft: rgb(233 184 114 / 0.12);
-  --c-hazard: #d9695f;
-  --c-hazard-soft: rgb(217 105 95 / 0.16);
-  --c-ok: #73b9a9;
-  --c-ok-soft: rgb(115 185 169 / 0.14);
-  --c-focus: #f2cf9a;
+  --c-accent: #ffffff;      /* primary actions are white pills */
+  --c-accent-ink: #000000;  /* text on accent */
+  --c-accent-soft: rgb(255 255 255 / 0.08);
+  --c-hazard: #ff5a2e;      /* signal orange-red */
+  --c-hazard-soft: rgb(255 90 46 / 0.14);
+  --c-ok: #b8e62e;          /* signal lime */
+  --c-ok-soft: rgb(184 230 46 / 0.12);
+  --c-focus: #ffffff;
 
-  /* ── Color: branches (low chroma, distinguishable, AA on bg) ─── */
-  --c-branch-0: #e9b872; /* main  — amber  */
-  --c-branch-1: #8fb3e0; /* blue           */
-  --c-branch-2: #b7a0dc; /* violet         */
-  --c-branch-3: #7fc4a8; /* teal           */
-  --c-branch-4: #dc9cb5; /* rose           */
-  --c-branch-5: #c9c27a; /* olive          */
+  /* ── Color: branches (distinct on black, used sparingly) ──────── */
+  --c-branch-0: #ffffff; /* main — white   */
+  --c-branch-1: #7aa7ff; /* blue           */
+  --c-branch-2: #b39dff; /* violet         */
+  --c-branch-3: #4fd1b5; /* teal           */
+  --c-branch-4: #ff9f6b; /* soft orange    */
+  --c-branch-5: #a3a3a3; /* gray           */
 
-  /* ── World palette (canvas) ──────────────────────────────────── */
-  --c-world-floor: #0e1115;
-  --c-world-grid: #171b21;
-  --c-world-wall: #2a313b;
-  --c-world-object: #8fb3e0;
-  --c-world-goal: #73b9a9;
+  /* ── World palette (canvas / WebGL) ──────────────────────────── */
+  --c-world-floor: #0a0a0a;
+  --c-world-grid: #1a1a1a;
+  --c-world-wall: #2b2b2b;
+  --c-world-object: #7aa7ff;
+  --c-world-goal: #b8e62e;
 
   /* ── Type ─────────────────────────────────────────────────────── */
   /* Families are injected by next/font as --font-sans/-mono/-serif. */

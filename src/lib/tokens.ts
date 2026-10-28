@@ -4,22 +4,22 @@
  * source of truth; the fallbacks only matter before styles load (and in tests).
  */
 const FALLBACK = {
-  bg: "#0b0d10",
-  surface1: "#101318",
-  line: "#20262e",
-  lineStrong: "#2d343e",
-  ink: "#e7e9ec",
-  ink2: "#a4abb5",
-  ink3: "#868f9b",
-  accent: "#e9b872",
-  hazard: "#d9695f",
-  ok: "#73b9a9",
-  floor: "#0e1115",
-  grid: "#171b21",
-  wall: "#2a313b",
-  object: "#8fb3e0",
-  goal: "#73b9a9",
-  branches: ["#e9b872", "#8fb3e0", "#b7a0dc", "#7fc4a8", "#dc9cb5", "#c9c27a"],
+  bg: "#000000",
+  surface1: "#0c0c0c",
+  line: "#1f1f1f",
+  lineStrong: "#333333",
+  ink: "#ffffff",
+  ink2: "#a6a6a6",
+  ink3: "#8c8c8c",
+  accent: "#ffffff",
+  hazard: "#ff5a2e",
+  ok: "#b8e62e",
+  floor: "#0a0a0a",
+  grid: "#1a1a1a",
+  wall: "#2b2b2b",
+  object: "#7aa7ff",
+  goal: "#b8e62e",
+  branches: ["#ffffff", "#7aa7ff", "#b39dff", "#4fd1b5", "#ff9f6b", "#a3a3a3"],
 };
 
 export type Palette = typeof FALLBACK;

@@ -62,11 +62,11 @@ export class WorldScene {
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
     this.renderer.toneMappingExposure = 1.05;
 
-    const space = new THREE.Color("#04050a");
+    const space = new THREE.Color("#000000");
     this.scene.background = space;
     this.scene.fog = new THREE.FogExp2(space, 0.0085);
 
-    this.scene.add(new THREE.AmbientLight(0x8090b0, 0.55));
+    this.scene.add(new THREE.AmbientLight(0xffffff, 0.5));
     const key = new THREE.DirectionalLight(0xffffff, 1.1);
     key.position.set(-12, 30, 18);
     this.scene.add(key);
@@ -79,7 +79,7 @@ export class WorldScene {
 
     this.composer = new EffectComposer(this.renderer);
     this.composer.addPass(new RenderPass(this.scene, this.camera));
-    this.bloom = new UnrealBloomPass(new THREE.Vector2(1, 1), 0.85, 0.55, 0.2);
+    this.bloom = new UnrealBloomPass(new THREE.Vector2(1, 1), 0.7, 0.5, 0.25);
     this.composer.addPass(this.bloom);
     this.composer.addPass(new OutputPass());
   }
@@ -237,8 +237,8 @@ class Shared {
     this.h = s.height;
     for (let y = 0; y < s.height; y++) for (let x = 0; x < s.width; x++) if (s.grid[y][x] === "#") this.walls.push({ x, y });
     this.wallMat = new THREE.MeshStandardMaterial({
-      color: "#3a4659",
-      emissive: new THREE.Color("#141c2a"),
+      color: "#3d3d3d",
+      emissive: new THREE.Color("#111111"),
       roughness: 0.65,
       metalness: 0.2,
     });
@@ -332,9 +332,9 @@ class WorldView {
       new THREE.MeshStandardMaterial({
         color: P.hazard,
         emissive: new THREE.Color(P.hazard),
-        emissiveIntensity: 0.6,
+        emissiveIntensity: 0.35,
         transparent: true,
-        opacity: 0.32,
+        opacity: 0.2,
         depthWrite: false,
       }),
     );
@@ -368,7 +368,7 @@ class WorldView {
 
     // Agent
     this.agentMat = this.mat(
-      new THREE.MeshStandardMaterial({ color: P.accent, emissive: new THREE.Color(P.accent), emissiveIntensity: 2.2, roughness: 0.3 }),
+      new THREE.MeshStandardMaterial({ color: P.accent, emissive: new THREE.Color(P.accent), emissiveIntensity: 1.6, roughness: 0.3 }),
     );
     this.agent = new THREE.Mesh(S.agentGeo, this.agentMat);
     this.haloMat = this.mat(new THREE.MeshBasicMaterial({ color: P.accent, transparent: true, opacity: 0.5, side: THREE.DoubleSide, depthWrite: false }));
@@ -418,7 +418,7 @@ class WorldView {
       hz.mesh.position.set(x, 0.35, z);
       hz.edges.position.copy(hz.mesh.position);
     });
-    this.hazardMat.emissiveIntensity = 0.5 + (reduced ? 0 : 0.25 * Math.sin(t * 3));
+    this.hazardMat.emissiveIntensity = 0.3 + (reduced ? 0 : 0.15 * Math.sin(t * 3));
 
     // Crystals spin and bob; collected ones vanish
     s.objects.forEach((o, i) => {
@@ -498,11 +498,11 @@ function makeFloorTexture(w: number, h: number): THREE.CanvasTexture {
   c.height = h * px;
   const ctx = c.getContext("2d")!;
   const g = ctx.createRadialGradient(c.width / 2, c.height / 2, 0, c.width / 2, c.height / 2, c.width * 0.7);
-  g.addColorStop(0, "#141a23");
-  g.addColorStop(1, "#0a0d12");
+  g.addColorStop(0, "#121212");
+  g.addColorStop(1, "#060606");
   ctx.fillStyle = g;
   ctx.fillRect(0, 0, c.width, c.height);
-  ctx.strokeStyle = "rgba(140,170,210,0.07)";
+  ctx.strokeStyle = "rgba(255,255,255,0.05)";
   ctx.lineWidth = 1;
   for (let x = 0; x <= w; x++) {
     ctx.beginPath();
@@ -516,7 +516,7 @@ function makeFloorTexture(w: number, h: number): THREE.CanvasTexture {
     ctx.lineTo(c.width, y * px + 0.5);
     ctx.stroke();
   }
-  ctx.fillStyle = "rgba(160,190,230,0.22)";
+  ctx.fillStyle = "rgba(255,255,255,0.16)";
   for (let y = 0; y <= h; y++) for (let x = 0; x <= w; x++) ctx.fillRect(x * px - 1, y * px - 1, 2, 2);
   const tex = new THREE.CanvasTexture(c);
   tex.colorSpace = THREE.SRGBColorSpace;
@@ -537,7 +537,7 @@ function makeStars(): THREE.Points {
   }
   const g = new THREE.BufferGeometry();
   g.setAttribute("position", new THREE.BufferAttribute(pos, 3));
-  const m = new THREE.PointsMaterial({ color: 0x9fb4d8, size: 0.7, sizeAttenuation: true, transparent: true, opacity: 0.55, fog: false });
+  const m = new THREE.PointsMaterial({ color: 0xffffff, size: 0.6, sizeAttenuation: true, transparent: true, opacity: 0.55, fog: false });
   return new THREE.Points(g, m);
 }
 

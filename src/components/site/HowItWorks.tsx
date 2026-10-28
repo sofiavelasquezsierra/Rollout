@@ -11,7 +11,7 @@ export function HowItWorks() {
     <div className="space-y-5 text-13 leading-relaxed text-ink-2">
       <p className="text-15 text-ink">
         Rollout is a design prototype of a debugger for agents acting inside generated worlds. Everything you see runs
-        on a deliberately small stand-in world so the <em>interface</em> ideas — scrubbing, forking, redirecting,
+        on a deliberately small stand-in world so the interface ideas — scrubbing, forking, redirecting,
         evaluating — can be tried end to end.
       </p>
 

@@ -8,7 +8,7 @@ export function Section({ id, n, title, children }: { id: string; n: string; tit
       <div className="grid gap-x-10 gap-y-4 md:grid-cols-[160px_1fr]">
         <p className="font-mono text-12 uppercase tracking-[0.14em] text-ink-3 md:pt-3">{n}</p>
         <div className="min-w-0">
-          <h2 id={`${id}-h`} className="font-serif text-36 leading-[1.08] tracking-[-0.01em] text-ink">
+          <h2 id={`${id}-h`} className="font-display text-36 leading-[1.08] text-ink">
             {title}
           </h2>
           <div className="prose-rollout mt-6 space-y-5 text-15 leading-[1.7] text-ink-2">{children}</div>
@@ -67,5 +67,5 @@ export function Rejected({ name, idea, why }: { name: string; idea: string; why:
 }
 
 export function Pull({ children }: { children: ReactNode }) {
-  return <p className="border-l-2 border-accent py-1 pl-5 font-serif text-24 italic leading-snug text-ink">{children}</p>;
+  return <p className="border-l-2 border-accent py-1 pl-5 font-display text-24 leading-snug text-ink">{children}</p>;
 }

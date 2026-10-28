@@ -18,7 +18,7 @@ export default function ResumePage() {
       <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
         <div>
           <p className="font-mono text-12 uppercase tracking-[0.14em] text-ink-3">Resume</p>
-          <h1 className="mt-2 font-serif text-36 leading-tight text-ink">
+          <h1 className="mt-2 font-display text-36 leading-tight text-ink">
             {/* TODO(author): your name */}
             <span className="text-accent">TODO</span> — Design Engineer
           </h1>

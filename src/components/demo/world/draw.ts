@@ -207,7 +207,7 @@ export function drawWorld(ctx: CanvasRenderingContext2D, s: WorldState, L: Layou
     }
   }
 
-  // Agent: amber disc, halo, facing notch
+  // Agent: accent disc, halo, facing notch
   {
     const x = cx(o.agentPos.x);
     const y = cy(o.agentPos.y);

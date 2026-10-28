@@ -113,12 +113,14 @@ ship in the bundle (~45 KB). A test re-derives every scripted decision to catch 
 - **Honest labels everywhere.** Each decision shows its source (Claude model + latency,
   scripted, or fallback with the reason); examples say how they were recorded; the
   “How this works” dialog states what is simulated.
-- **Glass over space.** Frosted `glass` panels float over the scene; tokens add `--c-space`,
-  `--c-glass*` and `--c-glow`.
+- **Glass over space.** Near-black `glass` panels float over the scene; tokens add
+  `--c-space`, `--c-glass*` and `--c-glow`.
 - **Tokens first.** `src/styles/tokens.css` defines color, type, spacing, radius and motion;
   Tailwind's default palette and type scale are disabled so only token utilities exist.
   Canvas reads the same CSS variables through `src/lib/tokens.ts`.
-- **Type.** Instrument Sans (UI), JetBrains Mono (data), Instrument Serif (editorial).
+- **Type.** Geist for UI and display (large, tight tracking), Geist Mono for data.
+- **Colour.** Monochrome, inspired by Runway's own site: black, white, gray steps, white pill
+  actions; colour is reserved for meaning (hazard orange-red, goal lime, branch identity).
 - **Motion with purpose.** Worlds split apart, the camera flies, the agent glides; under
   `prefers-reduced-motion` the camera snaps, idle drift and bobbing stop, and the first-visit
   autoplay is skipped.

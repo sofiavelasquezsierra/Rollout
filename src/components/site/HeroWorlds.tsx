@@ -20,16 +20,16 @@ export function HeroWorlds() {
             className="h-full w-full rounded-lg"
             style={{
               background:
-                "radial-gradient(circle at 50% 50%, #151b25 0%, #0a0d12 80%), repeating-linear-gradient(0deg, transparent 0 15px, rgb(140 170 210 / 0.08) 15px 16px)",
+                "radial-gradient(circle at 50% 50%, #141414 0%, #070707 80%), repeating-linear-gradient(0deg, transparent 0 15px, rgb(255 255 255 / 0.06) 15px 16px)",
               border: `1px solid ${w.c}`,
               boxShadow: `0 0 40px color-mix(in srgb, ${w.c} 35%, transparent), inset 0 0 30px rgb(0 0 0 / 0.6)`,
             }}
           >
             <svg viewBox="0 0 120 80" className="h-full w-full">
-              <rect x="22" y="34" width="34" height="8" fill="rgb(217 105 95 / 0.35)" stroke="var(--c-hazard)" strokeWidth="0.6" />
-              <rect x="68" y="34" width="34" height="8" fill="rgb(217 105 95 / 0.35)" stroke="var(--c-hazard)" strokeWidth="0.6" />
+              <rect x="22" y="34" width="34" height="8" fill="rgb(255 90 46 / 0.3)" stroke="var(--c-hazard)" strokeWidth="0.6" />
+              <rect x="68" y="34" width="34" height="8" fill="rgb(255 90 46 / 0.3)" stroke="var(--c-hazard)" strokeWidth="0.6" />
               <path d={w.path} fill="none" stroke={w.c} strokeWidth="1.4" strokeDasharray="2 2.5" />
-              <circle cx="10" cy="20" r="3" fill="var(--c-accent)" />
+              <circle cx="10" cy="20" r="3" fill="#ffffff" />
               <rect x="108" y="62" width="8" height="8" fill="none" stroke="var(--c-ok)" strokeWidth="1" />
             </svg>
           </div>
