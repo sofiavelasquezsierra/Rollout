@@ -1,9 +1,12 @@
 "use client";
 
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { LEVELS } from "@/sim";
 import { useRollout } from "@/store/useRollout";
-import { Label } from "@/components/ui/primitives";
+import { Button, Kbd, Label } from "@/components/ui/primitives";
+import { BranchGraph } from "./BranchGraph";
+import { BranchList } from "./BranchList";
+import { NoticeToast } from "./NoticeToast";
 import { Timeline } from "./Timeline";
 import { Transport } from "./Transport";
 import { WorldCanvas } from "./world/WorldCanvas";
@@ -23,9 +26,11 @@ export function Debugger() {
     [],
   );
   useShortcuts(handlers);
-  const newRun = useRollout((s) => s.newRun);
+
   const run = useRollout((s) => s.run);
-  const onLevel = useCallback((id: string) => newRun(id), [newRun]);
+  const cursor = useRollout((s) => s.cursor);
+  const freshId = useRollout((s) => s.freshBranchId);
+  const { newRun, fork } = useRollout.getState();
 
   return (
     <section
@@ -38,7 +43,7 @@ export function Debugger() {
         <select
           aria-label="Start a new run on level"
           value=""
-          onChange={(e) => e.target.value && onLevel(e.target.value)}
+          onChange={(e) => e.target.value && newRun(e.target.value)}
           className="ml-auto h-7 rounded-md border border-line bg-surface-2 px-2 text-12 text-ink-2"
         >
           <option value="">New run…</option>
@@ -50,15 +55,35 @@ export function Debugger() {
         </select>
       </div>
 
-      <div className="grid min-h-0 grid-cols-[1fr] lg:grid-cols-[240px_1fr_340px]">
-        <aside className="hidden border-r border-line p-4 lg:block">
-          <Label>Branches</Label>
+      <div className="grid min-h-0 grid-cols-[1fr] lg:grid-cols-[248px_1fr_340px]">
+        <aside aria-label="Branches" className="hidden min-h-0 grid-rows-[auto_minmax(120px,40%)_auto_1fr] border-r border-line lg:grid">
+          <div className="flex items-center justify-between px-4 pb-2 pt-3">
+            <Label>Branches</Label>
+            <span className="font-mono text-12 text-ink-3">{run.order.length}</span>
+          </div>
+          <div className="px-4">
+            <BranchGraph />
+          </div>
+          <div className="mx-4 my-3 h-px bg-line" />
+          <div className="min-h-0 overflow-y-auto px-2 pb-3">
+            <BranchList />
+          </div>
         </aside>
+
         <div className="relative min-h-0 p-4">
           <WorldCanvas className="h-full w-full" />
           <WorldHud />
+          {freshId && (
+            <div
+              key={freshId}
+              aria-hidden
+              className="pointer-events-none absolute inset-4 animate-fork-flash rounded-md ring-1 ring-accent/70"
+            />
+          )}
+          <NoticeToast />
         </div>
-        <aside className="hidden border-l border-line p-4 lg:block">
+
+        <aside aria-label="Inspector" className="hidden border-l border-line p-4 lg:block">
           <Label>Inspector</Label>
         </aside>
       </div>
@@ -66,6 +91,10 @@ export function Debugger() {
       <div className="border-t border-line bg-surface-1 px-4 pb-3 pt-2">
         <div className="flex items-center gap-4">
           <Transport />
+          <Button icon="fork" onClick={() => fork()} title="Fork the world at the playhead (F)" aria-keyshortcuts="F">
+            Fork at f{cursor}
+            <Kbd>F</Kbd>
+          </Button>
         </div>
         <div className="mt-1">
           <Timeline />

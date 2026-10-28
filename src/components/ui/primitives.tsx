@@ -108,7 +108,7 @@ export function Thinking({ className = "" }: { className?: string }) {
       {[0, 1, 2].map((i) => (
         <span
           key={i}
-          className="size-1 rounded-full bg-current animate-[pulse-dot_1s_ease-in-out_infinite]"
+          className="size-1 rounded-full bg-current animate-pulse-dot"
           style={{ animationDelay: `${i * 140}ms` }}
         />
       ))}

@@ -4,6 +4,7 @@ import { useMemo, useRef, useState, type PointerEvent as RPointerEvent } from "r
 import { branchVar } from "@/lib/tokens";
 import { headState } from "@/store/derive";
 import { headFrame, lineage, lineageEvents } from "@/store/run";
+import { frameDomain } from "@/store/selectors";
 import { useRollout } from "@/store/useRollout";
 
 /**
@@ -26,10 +27,7 @@ export function Timeline() {
   const head = headFrame(active);
 
   // Stable domain across branches so switching doesn't rescale the axis.
-  const domain = useMemo(() => {
-    const maxHead = Math.max(...run.order.map((id) => headFrame(run.branches[id])));
-    return Math.max(40, Math.ceil((maxHead * 1.08 + 4) / 10) * 10);
-  }, [run]);
+  const domain = useMemo(() => frameDomain(run), [run]);
 
   const segments = useMemo(() => {
     const chain = lineage(run, activeId);

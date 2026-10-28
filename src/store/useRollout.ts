@@ -200,6 +200,9 @@ export const useRollout = create<RolloutState>((set, get) => ({
       freshBranchId: res.branchId,
       activity: idleActivity,
     });
+    const b = res.run.branches[res.branchId];
+    const parent = res.run.branches[b.parentId!];
+    get().notify("info", `Forked “${b.name}” from ${parent.name} at f${b.forkFrame}. Press Space to let the agent explore it.`);
     return res.branchId;
   },
 
