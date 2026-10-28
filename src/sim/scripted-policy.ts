@@ -187,7 +187,7 @@ function explain(s: WorldState, d: Directives, target: Target, path: Vec[]): str
         : d.order === "farthest"
           ? "Farthest crystal from the exit first, as instructed"
           : "Nearest remaining crystal";
-  parts.push(`${why}: ${target.label}, ${path.length} steps ${where}.`);
+  parts.push(`${why}: ${target.label}, ${path.length} step${path.length === 1 ? "" : "s"} ${where}.`);
 
   const crossed = new Set(
     path.flatMap((p) => s.hazards.filter((h) => inHazard(h, p)).map((h) => h.id)),

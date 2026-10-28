@@ -51,7 +51,10 @@ interface RolloutState {
   /** Most recently created branch — drives the growth animation once. */
   freshBranchId: string | null;
   renamingId: string | null;
-  compare: [string, string] | null;
+  /** focus = fly to the active world; overview = pull back to see every parallel world at the same frame. */
+  view: "focus" | "overview";
+  /** Glass drawer with the full inspector. */
+  detailsOpen: boolean;
   notice: Notice | null;
   /** Server capability, from /api/status. null = unknown yet. */
   live: { available: boolean; agentModel?: string; evaluatorModel?: string } | null;
@@ -84,7 +87,8 @@ interface RolloutState {
   evaluating: Record<string, boolean>;
   evaluate(id: string): Promise<void>;
   evaluateAll(): Promise<void>;
-  setCompare(pair: [string, string] | null): void;
+  setView(v: "focus" | "overview"): void;
+  setDetailsOpen(open: boolean): void;
   notify(tone: Notice["tone"], text: string): void;
   dismissNotice(): void;
   tick(): void;
@@ -126,7 +130,8 @@ export const useRollout = create<RolloutState>((set, get) => ({
   activity: idleActivity,
   freshBranchId: null,
   renamingId: null,
-  compare: null,
+  view: "focus",
+  detailsOpen: false,
   notice: null,
   live: null,
   evaluating: {},
@@ -172,7 +177,7 @@ export const useRollout = create<RolloutState>((set, get) => ({
       activity: idleActivity,
       freshBranchId: null,
       renamingId: null,
-      compare: null,
+      view: "focus",
       evaluating: {},
       agentMode: opts.mode ?? get().agentMode,
     });
@@ -323,8 +328,12 @@ export const useRollout = create<RolloutState>((set, get) => ({
     }
   },
 
-  setCompare(compare) {
-    set({ compare });
+  setView(view) {
+    set({ view });
+  },
+
+  setDetailsOpen(detailsOpen) {
+    set({ detailsOpen });
   },
 
   notify(tone, text) {

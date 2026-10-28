@@ -21,11 +21,12 @@ export const SHORTCUTS: { keys: string[]; label: string }[] = [
   { keys: ["←", "→"], label: "Step one frame" },
   { keys: ["⇧", "← / →"], label: "Step ten frames" },
   { keys: ["Home", "End"], label: "Jump to start / head" },
-  { keys: ["F"], label: "Fork at the playhead" },
-  { keys: ["R"], label: "Rename the active branch" },
-  { keys: ["[", "]"], label: "Previous / next branch" },
-  { keys: ["/"], label: "Focus the director input" },
-  { keys: ["C"], label: "Compare branches" },
+  { keys: ["F"], label: "Split the world here (fork)" },
+  { keys: ["R"], label: "Rename the active world" },
+  { keys: ["[", "]"], label: "Fly to previous / next world" },
+  { keys: ["/"], label: "Talk to the agent" },
+  { keys: ["O"], label: "See all worlds side by side" },
+  { keys: ["I"], label: "Details (reasoning, state, instructions)" },
   { keys: ["?"], label: "Show shortcuts" },
 ];
 
@@ -84,10 +85,14 @@ export function useShortcuts(h: ShortcutHandlers, enabled = true) {
           break;
         case "c":
         case "C":
-          if (s.run.order.length >= 2) {
-            const other = s.run.order.find((id) => id !== s.activeBranchId)!;
-            s.setCompare(s.compare ? null : [s.activeBranchId, other]);
-          }
+        case "o":
+        case "O":
+          s.setView(s.view === "overview" ? "focus" : "overview");
+          if (s.view !== "overview") void s.evaluateAll();
+          break;
+        case "i":
+        case "I":
+          s.setDetailsOpen(!s.detailsOpen);
           break;
         case "/":
           e.preventDefault();
@@ -97,7 +102,8 @@ export function useShortcuts(h: ShortcutHandlers, enabled = true) {
           h.toggleHelp();
           break;
         case "Escape":
-          if (s.compare) s.setCompare(null);
+          if (s.detailsOpen) s.setDetailsOpen(false);
+          else if (s.view === "overview") s.setView("focus");
           break;
       }
     };

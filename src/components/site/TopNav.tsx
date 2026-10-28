@@ -9,8 +9,8 @@ export function TopNav() {
   const pathname = usePathname();
 
   return (
-    <header className="sticky top-0 z-40 border-b border-line bg-bg/85 backdrop-blur-md">
-      <div className="mx-auto flex h-12 max-w-[1600px] items-center justify-between gap-4 px-4 md:px-6">
+    <header className="fixed inset-x-0 top-0 z-40 px-3 pt-3 md:px-5">
+      <div className="glass mx-auto flex h-11 items-center justify-between gap-4 rounded-full pl-4 pr-1.5">
         <Link
           href="/"
           className="group flex items-center gap-2.5 text-ink"
@@ -19,7 +19,7 @@ export function TopNav() {
           <BranchMark className="size-[18px] text-accent t-base transition-transform group-hover:rotate-[-8deg]" />
           <span className="text-15 font-semibold tracking-[-0.01em]">Rollout</span>
           <span className="hidden font-mono text-12 text-ink-3 sm:inline">
-            agent · world · debugger
+            parallel worlds for agents
           </span>
         </Link>
 
@@ -33,17 +33,11 @@ export function TopNav() {
                   <Link
                     href={item.href}
                     aria-current={active ? "page" : undefined}
-                    className={`relative rounded-md px-3 py-1.5 text-13 t-fast transition-colors ${
-                      active ? "text-ink" : "text-ink-2 hover:bg-surface-2 hover:text-ink"
+                    className={`relative rounded-full px-3.5 py-1.5 text-13 t-fast transition-colors ${
+                      active ? "bg-white/10 text-ink" : "text-ink-2 hover:bg-white/[0.06] hover:text-ink"
                     }`}
                   >
                     {item.label}
-                    {active && (
-                      <span
-                        aria-hidden
-                        className="absolute inset-x-3 -bottom-[9px] h-px bg-accent"
-                      />
-                    )}
                   </Link>
                 </li>
               );

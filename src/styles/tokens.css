@@ -8,8 +8,16 @@
 :root {
   color-scheme: dark;
 
+  /* ── Color: space + glass (immersive layer) ─────────────────── */
+  --c-space: #04050a;       /* the void the worlds float in */
+  --c-glass: rgb(14 18 26 / 0.58);
+  --c-glass-strong: rgb(14 18 26 / 0.82);
+  --c-glass-line: rgb(190 210 255 / 0.10);
+  --c-glass-hi: rgb(255 255 255 / 0.07); /* inner top highlight */
+  --c-glow: rgb(233 184 114 / 0.45);
+
   /* ── Color: surfaces ─────────────────────────────────────────── */
-  --c-bg: #0b0d10;          /* page */
+  --c-bg: #07080d;          /* page */
   --c-surface-1: #101318;   /* panels */
   --c-surface-2: #151920;   /* raised: inputs, cards */
   --c-surface-3: #1c2129;   /* hover / selected */
