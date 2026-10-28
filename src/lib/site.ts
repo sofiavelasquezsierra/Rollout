@@ -10,3 +10,11 @@ export const navItems = [
   { href: "/case-study", label: "Case study" },
   { href: "/resume", label: "Resume" },
 ] as const;
+
+/** Per-page social metadata that keeps the site-wide fields (Next replaces, not merges, openGraph). */
+export function socialMeta(title: string, description: string) {
+  return {
+    openGraph: { type: "website" as const, siteName: "Rollout", title, description },
+    twitter: { card: "summary_large_image" as const, title, description },
+  };
+}
