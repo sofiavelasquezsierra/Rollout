@@ -1,9 +1,7 @@
-import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
-import { describeError, getClient } from "@/server/claude";
-import { EVALUATOR_MODEL, LIMITS, hasApiKey } from "@/server/env";
-import { EVALUATOR_SYSTEM, evaluatorUserPrompt } from "@/server/prompts";
+import { LIMITS, hasApiKey } from "@/server/env";
+import { claudeEvaluate } from "@/server/evaluator";
 import { EVAL_LIMIT, clientIp, takeToken } from "@/server/rate-limit";
-import { BodyError, EvaluateRequest, EvaluationOutput, readJson } from "@/server/schemas";
+import { BodyError, EvaluateRequest, readJson } from "@/server/schemas";
 
 /**
  * POST /api/evaluate — a separate Claude call (distinct model and prompt from
@@ -36,53 +34,6 @@ export async function POST(req: Request) {
     );
   }
 
-  try {
-    const msg = await getClient().beta.messages.create(
-      {
-        model: EVALUATOR_MODEL,
-        max_tokens: LIMITS.evaluatorMaxTokens,
-        // Server-side refusal fallback: routes a declined request to Anthropic's recommended model.
-        betas: ["server-side-fallback-2026-07-01"],
-        fallbacks: "default",
-        output_config: { effort: "medium", format: zodOutputFormat(EvaluationOutput) },
-        system: EVALUATOR_SYSTEM,
-        messages: [{ role: "user", content: evaluatorUserPrompt(body) }],
-      },
-      { signal: AbortSignal.any([req.signal, AbortSignal.timeout(LIMITS.evaluatorTimeoutMs)]) },
-    );
-
-    if (msg.stop_reason === "refusal") {
-      return Response.json({ fallback: true, reason: "the evaluator declined this request" });
-    }
-    if (msg.stop_reason === "max_tokens") {
-      return Response.json({ fallback: true, reason: "evaluator response was cut off" });
-    }
-    const text = msg.content.flatMap((b) => (b.type === "text" ? [b.text] : [])).join("");
-    const parsed = EvaluationOutput.safeParse(safeParse(text));
-    if (!parsed.success) {
-      return Response.json({ fallback: true, reason: "evaluator returned an invalid score" });
-    }
-    return Response.json({ evaluation: clampScores(parsed.data), model: msg.model });
-  } catch (err) {
-    return Response.json({ fallback: true, reason: describeError(err) });
-  }
-}
-
-function safeParse(text: string): unknown {
-  try {
-    return JSON.parse(text);
-  } catch {
-    return null;
-  }
-}
-
-function clampScores(e: EvaluationOutput): EvaluationOutput {
-  const c = (n: number) => Math.round(Math.max(0, Math.min(10, n)) * 10) / 10;
-  return {
-    progress: { ...e.progress, score: c(e.progress.score) },
-    efficiency: { ...e.efficiency, score: c(e.efficiency.score) },
-    safety: { ...e.safety, score: c(e.safety.score) },
-    overall: c(e.overall),
-    summary: e.summary,
-  };
+  const out = await claudeEvaluate(body, req.signal);
+  return Response.json(out.ok ? { evaluation: out.evaluation, model: out.model } : { fallback: true, reason: out.reason });
 }

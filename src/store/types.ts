@@ -76,6 +76,8 @@ export interface Run {
   branches: Record<string, Branch>;
   order: string[];
   nextSeq: number;
+  /** For examples: which branch and frame to open on. */
+  focus?: { branchId: string; cursor: number };
 }
 
 export const BRANCH_COLORS = 6;

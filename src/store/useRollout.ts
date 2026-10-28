@@ -3,6 +3,7 @@
 import { create } from "zustand";
 import { decide, type AgentMode } from "@/agent/decide";
 import { evaluateBranch } from "@/agent/evaluate";
+import { EXAMPLES } from "@/examples";
 import { getLevel } from "@/sim";
 import { clearDerived, headState, stateAt } from "./derive";
 import {
@@ -55,6 +56,11 @@ interface RolloutState {
   /** Server capability, from /api/status. null = unknown yet. */
   live: { available: boolean; agentModel?: string; evaluatorModel?: string } | null;
 
+  /** Which site-level dialog is open. */
+  dialog: null | "how" | "walkthrough" | "shortcuts";
+  setDialog(d: RolloutState["dialog"]): void;
+  loadExample(id: string): void;
+
   fetchStatus(): Promise<void>;
   loadRun(run: Run, opts?: { branchId?: string; cursor?: number; mode?: AgentMode }): void;
   newRun(levelId: string, mode?: AgentMode): void;
@@ -103,10 +109,12 @@ function blankRun(levelId: string): Run {
 
 const idleActivity: AgentActivity = { status: "idle", branchId: null, text: "" };
 
+const firstExample = EXAMPLES[0];
+
 export const useRollout = create<RolloutState>((set, get) => ({
-  run: blankRun("crossing"),
-  activeBranchId: "b0",
-  cursor: 0,
+  run: firstExample,
+  activeBranchId: firstExample.focus?.branchId ?? "b0",
+  cursor: firstExample.focus?.cursor ?? 0,
   playing: false,
   speed: 1,
   agentMode: "scripted",
@@ -117,6 +125,16 @@ export const useRollout = create<RolloutState>((set, get) => ({
   notice: null,
   live: null,
   evaluating: {},
+  dialog: null,
+
+  setDialog(dialog) {
+    set({ dialog });
+  },
+
+  loadExample(id) {
+    const run = EXAMPLES.find((r) => r.id === id);
+    if (run) get().loadRun(run, { mode: "scripted" });
+  },
 
   async fetchStatus() {
     try {
@@ -131,12 +149,13 @@ export const useRollout = create<RolloutState>((set, get) => ({
   loadRun(run, opts = {}) {
     abortInflight();
     clearDerived(get().run.id);
-    const branchId = opts.branchId ?? run.order[0];
+    const branchId = opts.branchId ?? run.focus?.branchId ?? run.order[0];
     const b = run.branches[branchId];
+    const cursor = opts.cursor ?? run.focus?.cursor ?? headFrame(b);
     set({
       run,
       activeBranchId: branchId,
-      cursor: Math.min(opts.cursor ?? headFrame(b), headFrame(b)),
+      cursor: Math.min(cursor, headFrame(b)),
       playing: false,
       activity: idleActivity,
       freshBranchId: null,

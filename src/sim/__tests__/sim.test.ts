@@ -267,6 +267,10 @@ describe("scripted policy", () => {
     expect(hz(careful)).toBeLessThanOrEqual(hz(greedy));
   });
 
+  it.each(LEVELS.map((l) => [l.id]))("'farthest first' still solves %s (no target flip-flopping)", (id) => {
+    expect(run(id, ["collect the farthest crystal first"]).outcome).toBe("success");
+  });
+
   it("'head straight for the goal' ends partial", () => {
     expect(run("crossing", ["head straight for the goal"]).outcome).toBe("partial");
   });

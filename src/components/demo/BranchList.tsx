@@ -42,48 +42,47 @@ export function BranchList() {
                 style={{ background: branchVar(b.colorIndex), boxShadow: active ? `0 0 0 3px color-mix(in srgb, ${branchVar(b.colorIndex)} 25%, transparent)` : undefined }}
               />
               <div className="min-w-0 flex-1">
-                {renamingId === id ? (
-                  <RenameInput
-                    initial={b.name}
-                    onDone={(v) => (v === null ? setRenaming(null) : rename(id, v))}
-                  />
-                ) : (
-                  <button
-                    type="button"
-                    onClick={() => setActiveBranch(id)}
-                    onDoubleClick={() => setRenaming(id)}
-                    aria-current={active ? "true" : undefined}
-                    className="block w-full truncate text-left text-13 text-ink after:absolute after:inset-0"
-                  >
-                    {b.name}
-                  </button>
-                )}
-                <div className="mt-0.5 flex items-center gap-1.5 font-mono text-12 text-ink-3 tabular">
-                  <span>
-                    {parent ? `⑂ ${parent.name}@${b.forkFrame}` : "root"} · f{sum.head}
-                  </span>
+                <div className="flex items-center gap-1.5">
+                  <div className="min-w-0 flex-1">
+                    {renamingId === id ? (
+                      <RenameInput initial={b.name} onDone={(v) => (v === null ? setRenaming(null) : rename(id, v))} />
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => setActiveBranch(id)}
+                        onDoubleClick={() => setRenaming(id)}
+                        aria-current={active ? "true" : undefined}
+                        className="block w-full truncate text-left text-13 text-ink after:absolute after:inset-0"
+                      >
+                        {b.name}
+                      </button>
+                    )}
+                  </div>
+                  <div className="relative z-10 flex shrink-0 items-center gap-1">
+                    {renamingId !== id && (
+                      <button
+                        type="button"
+                        onClick={() => setRenaming(id)}
+                        aria-label={`Rename ${b.name}`}
+                        title="Rename (R)"
+                        className="rounded-sm p-0.5 text-ink-3 opacity-0 t-fast transition-opacity hover:text-ink focus-visible:opacity-100 group-hover:opacity-100"
+                      >
+                        <Icon name="pencil" size={14} />
+                      </button>
+                    )}
+                    {evaluating[id] ? (
+                      <span className="inline-flex h-5 items-center rounded-sm border border-line-strong px-1.5 text-ink-3" aria-label="Scoring">
+                        <Thinking />
+                      </span>
+                    ) : (
+                      b.evaluation && <ScoreChip evaluation={b.evaluation} stale={b.evaluation.atFrame !== sum.head} />
+                    )}
+                  </div>
+                </div>
+                <div className="mt-0.5 truncate font-mono text-12 text-ink-3 tabular">
+                  {parent ? `⑂ ${parent.name}@${b.forkFrame}` : "root"} · f{sum.head} ·{" "}
                   <span className={OUTCOME_STYLE[sum.outcome]}>{sum.outcome}</span>
                 </div>
-              </div>
-              <div className="relative z-10 flex shrink-0 items-center gap-1 pt-0.5">
-                {evaluating[id] ? (
-                  <span className="inline-flex h-5 items-center rounded-sm border border-line-strong px-1.5 text-ink-3" aria-label="Scoring">
-                    <Thinking />
-                  </span>
-                ) : (
-                  b.evaluation && <ScoreChip evaluation={b.evaluation} stale={b.evaluation.atFrame !== sum.head} />
-                )}
-                {renamingId !== id && (
-                  <button
-                    type="button"
-                    onClick={() => setRenaming(id)}
-                    aria-label={`Rename ${b.name}`}
-                    title="Rename (R)"
-                    className="rounded-sm p-0.5 text-ink-3 opacity-0 t-fast transition-opacity hover:text-ink focus-visible:opacity-100 group-hover:opacity-100"
-                  >
-                    <Icon name="pencil" size={14} />
-                  </button>
-                )}
               </div>
             </div>
           </li>

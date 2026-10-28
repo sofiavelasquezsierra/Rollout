@@ -1,4 +1,4 @@
-import { DELTAS, hazardAt, inHazard, isWall } from "./geometry";
+import { DELTAS, hazardAt, inHazard, isWall, manhattan } from "./geometry";
 import { step } from "./step";
 import type { Action, Dir, Vec, WorldState } from "./types";
 
@@ -131,9 +131,12 @@ function chooseTarget(s: WorldState, d: Directives, f: Field): Target {
     // keep objects within 3 cells of the extreme in that direction
     pool = pool.filter((o) => key(o) <= bestKey + 3);
   }
-  const cost = (o: (typeof pool)[number]) => f.dist[o.pos.y * s.width + o.pos.x];
-  const sorted = [...pool].sort((a, b) => cost(a) - cost(b) || a.id.localeCompare(b.id));
-  const pick = d.order === "farthest" ? sorted[sorted.length - 1] : sorted[0];
+  // "Nearest" is by path cost from the agent. "Farthest" is measured from the exit,
+  // not the agent: a stateless policy re-plans every step, and a target defined
+  // relative to the agent would flip back and forth as it moves.
+  const cost = (o: (typeof pool)[number]) =>
+    d.order === "farthest" ? -manhattan(o.pos, s.goal) : f.dist[o.pos.y * s.width + o.pos.x];
+  const pick = [...pool].sort((a, b) => cost(a) - cost(b) || a.id.localeCompare(b.id))[0];
   return { label: `crystal ${pick.id}`, pos: pick.pos };
 }
 
@@ -182,7 +185,7 @@ function explain(s: WorldState, d: Directives, target: Target, path: Vec[]): str
       : d.region
         ? `Prioritising the ${d.region} side as instructed`
         : d.order === "farthest"
-          ? "Taking the farthest crystal first as instructed"
+          ? "Farthest crystal from the exit first, as instructed"
           : "Nearest remaining crystal";
   parts.push(`${why}: ${target.label}, ${path.length} steps ${where}.`);
 

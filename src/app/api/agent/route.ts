@@ -1,9 +1,7 @@
-import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
-import { describeError, getClient, partialReasoning } from "@/server/claude";
-import { AGENT_MODEL, LIMITS, hasApiKey } from "@/server/env";
-import { AGENT_SYSTEM, agentUserPrompt } from "@/server/prompts";
+import { claudeAgentDecision } from "@/server/agent";
+import { LIMITS, hasApiKey } from "@/server/env";
 import { AGENT_LIMIT, clientIp, takeToken } from "@/server/rate-limit";
-import { AgentDecision, AgentRequest, BodyError, readJson } from "@/server/schemas";
+import { AgentRequest, BodyError, readJson } from "@/server/schemas";
 
 /**
  * POST /api/agent — one agent decision, streamed as Server-Sent Events:
@@ -49,55 +47,18 @@ export async function POST(req: Request) {
         return;
       }
 
-      const t0 = Date.now();
-      const timeout = AbortSignal.timeout(LIMITS.agentTimeoutMs);
-      const signal = AbortSignal.any([req.signal, timeout]);
+      const out = await claudeAgentDecision(body, {
+        signal: req.signal,
+        onReasoning: (reasoning) => send("delta", { reasoning }),
+      });
+      if (!req.signal.aborted) {
+        if (out.ok) send("decision", { ...out.decision, model: out.model, latencyMs: out.latencyMs });
+        else send("fallback", { reason: out.reason });
+      }
       try {
-        const ms = getClient().messages.stream(
-          {
-            model: AGENT_MODEL,
-            max_tokens: LIMITS.agentMaxTokens,
-            // Fast, cheap control loop: minimal thinking, schema-constrained JSON.
-            thinking: { type: "disabled" },
-            output_config: { effort: "low", format: zodOutputFormat(AgentDecision) },
-            system: AGENT_SYSTEM,
-            messages: [{ role: "user", content: agentUserPrompt(body) }],
-          },
-          { signal },
-        );
-
-        let json = "";
-        let lastSent = "";
-        for await (const event of ms) {
-          if (event.type === "content_block_delta" && event.delta.type === "text_delta") {
-            json += event.delta.text;
-            const r = partialReasoning(json);
-            if (r && r !== lastSent) {
-              lastSent = r;
-              send("delta", { reasoning: r });
-            }
-          }
-        }
-        const final = await ms.finalMessage();
-        if (final.stop_reason === "refusal") {
-          send("fallback", { reason: "the model declined this request" });
-        } else if (final.stop_reason === "max_tokens") {
-          send("fallback", { reason: "agent response was cut off" });
-        } else {
-          const decision = parseDecision(json);
-          if (!decision) send("fallback", { reason: "agent returned an invalid plan" });
-          else send("decision", { ...decision, model: final.model, latencyMs: Date.now() - t0 });
-        }
-      } catch (err) {
-        if (!req.signal.aborted) {
-          send("fallback", { reason: timeout.aborted ? "Claude API timed out" : describeError(err) });
-        }
-      } finally {
-        try {
-          controller.close();
-        } catch {
-          // client already disconnected
-        }
+        controller.close();
+      } catch {
+        // client already disconnected
       }
     },
   });
@@ -110,17 +71,4 @@ export async function POST(req: Request) {
       "X-Accel-Buffering": "no",
     },
   });
-}
-
-function parseDecision(json: string): AgentDecision | null {
-  try {
-    const parsed = AgentDecision.safeParse(JSON.parse(json));
-    if (!parsed.success || parsed.data.actions.length === 0) return null;
-    return {
-      reasoning: parsed.data.reasoning.trim().slice(0, 400),
-      actions: parsed.data.actions.slice(0, 5),
-    };
-  } catch {
-    return null;
-  }
 }
