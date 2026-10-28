@@ -24,16 +24,16 @@ export function parseDirectives(instructions: readonly string[]): Directives {
   const d: Directives = { avoidHazards: false, order: "nearest", region: null, goalNow: false };
   for (const raw of instructions) {
     const t = raw.toLowerCase();
-    if (/\b(ignore|don'?t care about|through) (the )?(red|hazard|zone)/.test(t)) d.avoidHazards = false;
-    else if (/avoid|stay (out|away|clear)|red|hazard|danger|careful|no violations|safe/.test(t)) d.avoidHazards = true;
+    if (/\b(ignore|don'?t care about|through) (the )?(red|hazard|caution|zone)/.test(t)) d.avoidHazards = false;
+    else if (/avoid|stay (out|away|clear)|red|hazard|caution|cones?\b|danger|careful|no violations|safe/.test(t)) d.avoidHazards = true;
     if (/farthest|furthest/.test(t)) d.order = "farthest";
     else if (/nearest|closest/.test(t)) d.order = "nearest";
     if (/\b(bottom|south|lower)\b/.test(t)) d.region = "south";
     else if (/\b(top|north|upper)\b/.test(t)) d.region = "north";
     else if (/\b(left|west)\b/.test(t)) d.region = "west";
     else if (/\b(right|east)\b/.test(t)) d.region = "east";
-    if (/(go|head|straight|run|beeline).{0,20}(goal|exit)|finish now|skip/.test(t)) d.goalNow = true;
-    else if (/(collect|get|grab|pick)/.test(t)) d.goalNow = false;
+    if (/(go|head|straight|run|beeline|return|drive).{0,20}(goal|exit|dock|charg)|finish now|skip/.test(t)) d.goalNow = true;
+    else if (/(collect|get|grab|pick|deliver)/.test(t)) d.goalNow = false;
   }
   return d;
 }
@@ -119,9 +119,9 @@ interface Target {
 
 function chooseTarget(s: WorldState, d: Directives, f: Field): Target {
   const remaining = s.objects.filter((o) => !o.collected);
-  if (d.goalNow || remaining.length === 0) return { label: "the goal", pos: s.goal };
+  if (d.goalNow || remaining.length === 0) return { label: "the dock", pos: s.goal };
   const reachable = remaining.filter((o) => f.dist[o.pos.y * s.width + o.pos.x] < Infinity);
-  if (reachable.length === 0) return { label: "the goal", pos: s.goal };
+  if (reachable.length === 0) return { label: "the dock", pos: s.goal };
 
   let pool = reachable;
   if (d.region) {
@@ -137,7 +137,7 @@ function chooseTarget(s: WorldState, d: Directives, f: Field): Target {
   const cost = (o: (typeof pool)[number]) =>
     d.order === "farthest" ? -manhattan(o.pos, s.goal) : f.dist[o.pos.y * s.width + o.pos.x];
   const pick = [...pool].sort((a, b) => cost(a) - cost(b) || a.id.localeCompare(b.id))[0];
-  return { label: `crystal ${pick.id}`, pos: pick.pos };
+  return { label: `parcel ${pick.id}`, pos: pick.pos };
 }
 
 function compass(from: Vec, to: Vec): string {
@@ -178,15 +178,15 @@ function explain(s: WorldState, d: Directives, target: Target, path: Vec[]): str
   if (!path.length) return `No path to ${target.label}; holding position.`;
   const where = compass(s.agent.pos, target.pos);
   const why =
-    target.label === "the goal"
+    target.label === "the dock"
       ? left === 0
-        ? "All crystals collected"
-        : `Director asked to head for the exit (${left} crystal${left === 1 ? "" : "s"} left behind)`
+        ? "All parcels collected"
+        : `Director asked to return to the dock (${left} parcel${left === 1 ? "" : "s"} left behind)`
       : d.region
         ? `Prioritising the ${d.region} side as instructed`
         : d.order === "farthest"
-          ? "Farthest crystal from the exit first, as instructed"
-          : "Nearest remaining crystal";
+          ? "Farthest parcel from the dock first, as instructed"
+          : "Nearest remaining parcel";
   parts.push(`${why}: ${target.label}, ${path.length} step${path.length === 1 ? "" : "s"} ${where}.`);
 
   const crossed = new Set(
@@ -195,11 +195,11 @@ function explain(s: WorldState, d: Directives, target: Target, path: Vec[]): str
   if (crossed.size) {
     parts.push(
       d.avoidHazards
-        ? `No clean route — must cross red zone ${[...crossed].join(", ")}.`
-        : `Shortest route crosses red zone ${[...crossed].join(", ")}; accepting the violation.`,
+        ? `No clean route — must cross caution zone ${[...crossed].join(", ")}.`
+        : `Shortest route crosses caution zone ${[...crossed].join(", ")}; accepting the violation.`,
     );
   } else if (d.avoidHazards) {
-    parts.push("Routing around red zones per director instruction.");
+    parts.push("Routing around caution zones per director instruction.");
   }
   return parts.join(" ");
 }

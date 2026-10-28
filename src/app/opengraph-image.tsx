@@ -62,7 +62,7 @@ export default function OpengraphImage() {
           {dots.map(([x, y]) => (
             <div key={`${x}-${y}`} style={{ position: "absolute", left: x * cell + cell / 2, top: y * cell + cell / 2, width: 2, height: 2, background: "#1f1f1f" }} />
           ))}
-          {/* red zone */}
+          {/* caution zones */}
           <div style={{ position: "absolute", left: 1 * cell, top: 5 * cell, width: 6 * cell, height: 2 * cell, background: "rgba(255,90,46,0.14)", border: `1px solid ${C.hazard}` }} />
           <div style={{ position: "absolute", left: 9 * cell, top: 5 * cell, width: 6 * cell, height: 2 * cell, background: "rgba(255,90,46,0.14)", border: `1px solid ${C.hazard}` }} />
           {/* main path (cuts through) */}

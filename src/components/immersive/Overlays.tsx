@@ -156,7 +156,7 @@ export function ThoughtBubble() {
           </p>
           {s.outcome !== "running" && cursor >= head && (
             <p className={`mt-1.5 font-mono text-[11px] ${OUTCOME_TONE[s.outcome]}`}>
-              {s.outcome === "success" ? "✓ all crystals, goal reached" : s.outcome === "partial" ? "goal reached, crystals left behind" : "ran out of time"}
+              {s.outcome === "success" ? "✓ all parcels, docked" : s.outcome === "partial" ? "docked, parcels left behind" : "ran out of time"}
             </p>
           )}
         </div>
@@ -184,8 +184,8 @@ export function ScoreCards() {
               <div className="glass w-56 rounded-xl p-3 text-12">
                 <div className="grid grid-cols-3 gap-1 text-center font-mono tabular">
                   <Stat k="ticks" v={sum.head} />
-                  <Stat k="crystals" v={`${sum.collected}/${sum.total}`} />
-                  <Stat k="red" v={sum.hazardHits} tone={sum.hazardHits ? "text-hazard" : "text-ink"} />
+                  <Stat k="parcels" v={`${sum.collected}/${sum.total}`} />
+                  <Stat k="in zone" v={sum.hazardHits} tone={sum.hazardHits ? "text-hazard" : "text-ink"} />
                 </div>
                 <div className="mt-2.5 border-t border-[var(--c-glass-line)] pt-2.5">
                   {evaluating[id] ? (
@@ -275,10 +275,11 @@ export function HeroLine({ onWalkthrough, onHow }: { onWalkthrough: () => void; 
       aria-hidden={hidden}
     >
       <h1 className="font-display text-[clamp(1.9rem,3.6vw,3rem)] leading-[1.02] text-ink [text-shadow:0_2px_30px_rgb(0_0_0/0.8)]">
-        What if the agent had chosen <span className="text-ink-3">differently?</span>
+        What if the robot had chosen <span className="text-ink-3">differently?</span>
       </h1>
       <p className="mx-auto mt-3 max-w-md text-15 text-ink-2 [text-shadow:0_1px_16px_rgb(0_0_0/0.9)]">
-        Split the world at any moment, tell the agent what to do, and watch the futures side by side.
+        Fork a simulated rollout at any frame, redirect the agent in plain language, and compare the futures side by
+        side.
       </p>
       <div className="pointer-events-auto mt-4 flex justify-center gap-2">
         <button type="button" onClick={onWalkthrough} className="glass inline-flex h-9 items-center gap-2 rounded-full pl-1.5 pr-4 text-13 text-ink hover:bg-white/5">

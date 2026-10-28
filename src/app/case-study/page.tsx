@@ -15,6 +15,7 @@ export const metadata: Metadata = {
 };
 
 const TOC = [
+  ["fit", "Why Runway Labs"],
   ["problem", "The problem"],
   ["user", "Who it’s for"],
   ["constraints", "Constraints"],
@@ -59,6 +60,55 @@ export default function CaseStudyPage() {
 
       <div className="grid gap-12 lg:grid-cols-[1fr_200px]">
         <div className="min-w-0">
+          <Section id="fit" n="00" title="Why this, for Runway Labs">
+            <p>
+              Runway Labs is exploring interfaces for AI video, general world models and agentic systems — tools that let
+              researchers and creatives direct those systems in real time. GWM-1’s robotics work frames simulation as a
+              place to run policies, evaluate them, and generate counterfactual trajectories. Rollout is a working
+              prototype of the interface layer for exactly that loop, on a small stand-in world.
+            </p>
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[560px] border-collapse text-13">
+                <thead>
+                  <tr className="border-b border-line-strong text-left">
+                    <th className="w-[38%] py-2 pr-4 font-mono text-12 font-normal uppercase tracking-[0.12em] text-ink-3">The role asks for</th>
+                    <th className="py-2 font-mono text-12 font-normal uppercase tracking-[0.12em] text-ink-3">Where it shows up in Rollout</th>
+                  </tr>
+                </thead>
+                <tbody className="text-ink-2">
+                  {[
+                    [
+                      "Agentic tools for directing AI systems in real time",
+                      "A Claude agent reasons over world state and acts every few frames; you redirect it in plain language mid-run, and each instruction becomes an event on the timeline.",
+                    ],
+                    [
+                      "New interaction paradigms for world models and simulation",
+                      "Counterfactuals as the core verb: split the world at any frame, and every branch lives beside its parent at the same moment, so “same state, different choice” is visible without asking for it.",
+                    ],
+                    [
+                      "Research tooling",
+                      "Deterministic replay from any frame, a separate evaluator with a fixed rubric, scorecards that mark themselves stale, and a label on every decision and score saying where it came from.",
+                    ],
+                    [
+                      "Stretching front-end engineering",
+                      "A real-time three.js renderer — physically based materials, soft shadows, a tilt-shift lens pass — with HTML pinned to 3D anchors, a 2D fallback, and streaming server routes with rate limits and graceful fallback.",
+                    ],
+                    [
+                      "Visual and interaction design, and usability testing",
+                      "Four directions explored and one full version rebuilt (section 04). Usability findings are in section 08 — written up only once real sessions have happened.",
+                    ],
+                  ].map(([a, b]) => (
+                    <tr key={a} className="border-b border-line align-top">
+                      <td className="py-2.5 pr-4 text-ink">{a}</td>
+                      <td className="py-2.5">{b}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <Todo>Add a sentence or two in your own voice on why Runway Labs specifically, and what you’d want to explore first.</Todo>
+          </Section>
+
           <Section id="problem" n="01" title="Agents in world models are hard to interrogate">
             <p>
               A generated world turns an agent’s behaviour into a long, continuous rollout. When something goes wrong — the
@@ -93,7 +143,7 @@ export default function CaseStudyPage() {
             <p>
               <strong className="text-ink">A researcher evaluating an agent or a world model.</strong> They care about
               failure modes, reproducibility and comparisons they can defend. They want to point at frame 42 and say
-              “here — this is where it decided to cut through the red zone,” then show what the alternative would have
+              “here — this is where it decided to cut through the caution zone,” then show what the alternative would have
               been.
             </p>
             <p>
@@ -185,7 +235,7 @@ export default function CaseStudyPage() {
               />
               <Decision
                 title="Branches are places, not rows"
-                chose="Each branch is its own glowing world floating beside its parent; splitting visibly pushes a new world out of the old one, and the camera follows it."
+                chose="Each branch is its own test bay on the lab floor, beside its parent; splitting visibly pushes a new bay out of the old one, and the camera follows it."
                 tradeoff="Space is finite: past five or six worlds the overview gets small. The focus view keeps the active world large, with neighbours peeking in at the edges."
               />
               <Decision
@@ -234,7 +284,7 @@ export default function CaseStudyPage() {
                 </thead>
                 <tbody className="text-ink-2">
                   {[
-                    ["World", "Stand-in", "A deterministic 24×16 gridworld, not a learned world model and not a Runway model."],
+                    ["World", "Stand-in", "A deterministic 24×16 gridworld, rendered as a robot test bay in three.js. Not generated video, not a learned world model and not a Runway model."],
                     ["Agent", "Real", "Claude calls via a server route, streamed. Falls back to a scripted planner when unavailable."],
                     ["Evaluator", "Real", "Separate Claude call and rubric. Falls back to a labeled heuristic."],
                     ["Example runs", "Recorded", "Bundled event logs; the header says whether they were recorded with Claude or the scripted policy."],
@@ -257,7 +307,7 @@ export default function CaseStudyPage() {
               <p>This section is intentionally empty until real sessions have happened. Suggested structure:</p>
               <ul className="list-disc space-y-1 pl-5">
                 <li>Who took part and how they were recruited (number of participants: TODO).</li>
-                <li>Tasks, e.g. “find where the agent first enters a red zone and show what happens if it doesn’t”.</li>
+                <li>Tasks, e.g. “find where the robot first enters a caution zone and show what happens if it doesn’t”.</li>
                 <li>What people did, verbatim quotes with permission (TODO), and where they got stuck.</li>
                 <li>What changed in the design as a result, with before/after screenshots.</li>
               </ul>
@@ -269,8 +319,8 @@ export default function CaseStudyPage() {
             <ul className="list-disc space-y-3 pl-5 marker:text-ink-3">
               <li>
                 <strong className="text-ink">Swap the gridworld for real rollouts.</strong> Keep the event log and branch
-                model; replace the canvas with generated frames, and make fork points real conditioning states of the
-                world model.
+                model; replace the rendered bay with action-conditioned generated frames, and make fork points real
+                conditioning states of the world model — counterfactual generation as an interface.
               </li>
               <li>
                 <strong className="text-ink">Branch diffs for video.</strong> Align two branches in time and highlight
@@ -310,7 +360,7 @@ export default function CaseStudyPage() {
               {TOC.map(([id, label], i) => (
                 <li key={id}>
                   <a href={`#${id}`} className="flex gap-2 text-ink-3 t-fast transition-colors hover:text-ink">
-                    <span className="font-mono text-12 tabular">{String(i + 1).padStart(2, "0")}</span>
+                    <span className="font-mono text-12 tabular">{String(i).padStart(2, "0")}</span>
                     {label}
                   </a>
                 </li>

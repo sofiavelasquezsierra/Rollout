@@ -224,11 +224,11 @@ function StatePanel() {
       </dl>
 
       <section>
-        <Label className="mb-2 block">Crystals</Label>
+        <Label className="mb-2 block">Parcels</Label>
         <ul className="grid grid-cols-2 gap-1 font-mono text-12">
           {s.objects.map((o) => (
             <li key={o.id} className={`flex items-center gap-1.5 ${o.collected ? "text-ink-3 line-through" : "text-ink"}`}>
-              <span className="text-[var(--c-world-object)]">{o.collected ? "◇" : "◆"}</span>
+              <span className="text-[var(--c-world-object)]">{o.collected ? "□" : "■"}</span>
               {o.id} ({o.pos.x},{o.pos.y})
             </li>
           ))}
@@ -236,7 +236,7 @@ function StatePanel() {
       </section>
 
       <section>
-        <Label className="mb-2 block">Red zones</Label>
+        <Label className="mb-2 block">Caution zones</Label>
         <ul className="space-y-1 font-mono text-12 text-ink-2">
           {s.hazards.map((h) => (
             <li key={h.id}>
@@ -298,7 +298,7 @@ function InstructionsPanel() {
     return (
       <Empty
         title="No director instructions"
-        body="Type below to redirect the agent mid-run — e.g. “avoid the red zone”. The instruction is injected into the next agent call and marked on the timeline with ◆."
+        body="Type below to redirect the agent mid-run — e.g. “avoid the caution zones”. The instruction is injected into the next agent call and marked on the timeline with ◆."
       />
     );
   }

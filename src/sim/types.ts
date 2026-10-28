@@ -21,7 +21,7 @@ export interface WorldObject {
   collected: boolean;
 }
 
-/** A rectangular red zone. If `drift` is set it moves horizontally on a seeded schedule. */
+/** A rectangular caution zone (hazard). If `drift` is set it moves horizontally on a seeded schedule. */
 export interface Hazard {
   id: string;
   x: number;

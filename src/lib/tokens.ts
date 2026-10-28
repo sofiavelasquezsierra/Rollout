@@ -17,7 +17,7 @@ const FALLBACK = {
   floor: "#0a0a0a",
   grid: "#1a1a1a",
   wall: "#2b2b2b",
-  object: "#7aa7ff",
+  object: "#b48a5e",
   goal: "#b8e62e",
   branches: ["#ffffff", "#7aa7ff", "#b39dff", "#4fd1b5", "#ff9f6b", "#a3a3a3"],
 };

@@ -1,15 +1,15 @@
 # Rollout
 
-A debugger for an AI agent acting in a simulated world, designed as an immersive space:
-every branch of a rollout is a glowing **parallel world** floating side by side, shown at the
-same moment. Scrub time, split the world at any frame, tell the agent what to do, read its
+A debugger for an AI agent acting in a simulated world — counterfactual rollouts as an
+interface. A delivery robot works a test bay on a lab floor; every branch of its rollout is a
+**parallel bay** beside its parent, shown at the same moment. Scrub time, split the world at any frame, tell the agent what to do, read its
 thoughts beside it, and pull back to compare worlds scored by a separate evaluator.
 
 It's one link with three pages: **`/`** the demo, **`/case-study`** the design write-up, and
 **`/resume`** the resume viewer.
 
-> The world is a stylized, deterministic gridworld — not a Runway model and not a learned
-> world model. The agent and the evaluator are real Claude calls (with labeled fallbacks).
+> The world is a stylized, deterministic gridworld rendered to look like a filmed test bay —
+> not generated video, not a Runway model and not a learned world model. The agent and the evaluator are real Claude calls (with labeled fallbacks).
 
 ## Run it
 
@@ -72,9 +72,16 @@ instructions. World state is never stored — `stateAt(run, branch, frame)` repl
 branch's lineage through a `ReplayCache` that keeps a snapshot every 16 frames. Forking is
 adding a pointer; rename and jump touch metadata only.
 
-**The view.** `WorldScene` (three.js) renders one diorama per branch — instanced walls,
-glowing crystals, translucent drifting red volumes, a goal ring and beam, the agent orb with a
-halo and bead trail — with bloom and fog over a starfield. All worlds show the same frame;
+**The view.** `WorldScene` (three.js) renders each branch as a test bay on a dark robotics lab
+floor: a polished-concrete deck on a steel plinth edged with an LED strip in the branch colour,
+steel barriers merged into continuous runs, cardboard parcels, striped caution zones with
+traffic cones that drift as a unit, a charging dock, and a small differential-drive robot with
+a spinning lidar and a status LED that flashes on violations. Lighting is physically based: a
+procedural `RoomEnvironment` for reflections (no HDR file), a fixed pool of six overhead
+spots assigned to the nearest bays (a fixed count, so forking never recompiles shaders), one
+shadow-casting key, and fog so the hall falls into darkness. A custom lens pass adds
+tilt-shift blur, a slight chromatic fringe, vignette and film grain; all textures are drawn
+procedurally on canvas, so the scene ships zero image assets. All worlds show the same frame;
 the camera eases to the active world or pulls back for the overview. `Stage` drives the
 scene from the store every animation frame and positions HTML elements pinned to 3D anchors
 (world tags, the agent's thought bubble, scorecards) imperatively, so React renders only when

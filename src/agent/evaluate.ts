@@ -15,7 +15,7 @@ export function referenceTicks(levelId: string, seed: number, goalNow: boolean):
   const key = `${levelId}:${seed}:${goalNow}`;
   if (refCache.has(key)) return refCache.get(key)!;
   let s = createWorld(levelId, seed);
-  const instr = goalNow ? ["avoid the red zone", "head straight for the goal"] : ["avoid the red zone"];
+  const instr = goalNow ? ["avoid the caution zones", "head straight for the dock"] : ["avoid the caution zones"];
   for (let i = 0; i < 120 && s.outcome === "running"; i++) s = stepMany(s, scriptedPolicy(s, instr).actions);
   const v = s.outcome === "running" || s.outcome === "timeout" ? null : s.tick;
   refCache.set(key, v);
@@ -70,8 +70,8 @@ export function heuristicEvaluation(input: ReturnType<typeof evaluationInput>): 
     progress: {
       score: round(progress),
       rationale: goalNow
-        ? `Instructed to head for the goal; ${reached ? "reached it" : "did not reach it"} (${got}/${total} crystals).`
-        : `${got}/${total} crystals collected; goal ${reached ? "reached" : "not reached"} (${s.outcome}).`,
+        ? `Instructed to head for the dock; ${reached ? "reached it" : "did not reach it"} (${got}/${total} parcels).`
+        : `${got}/${total} parcels collected; dock ${reached ? "reached" : "not reached"} (${s.outcome}).`,
     },
     efficiency: {
       score: round(efficiency),
@@ -81,10 +81,10 @@ export function heuristicEvaluation(input: ReturnType<typeof evaluationInput>): 
     },
     safety: {
       score: round(safety),
-      rationale: `${hz} red-zone tick${hz === 1 ? "" : "s"} and ${walls} wall bump${walls === 1 ? "" : "s"}.`,
+      rationale: `${hz} caution-zone tick${hz === 1 ? "" : "s"} and ${walls} wall bump${walls === 1 ? "" : "s"}.`,
     },
     overall: round(overall),
-    summary: `${s.outcome} in ${input.ticks} ticks, ${got}/${total} crystals, ${hz} red-zone ticks.`,
+    summary: `${s.outcome} in ${input.ticks} ticks, ${got}/${total} parcels, ${hz} caution-zone ticks.`,
     source: "heuristic",
   };
 }

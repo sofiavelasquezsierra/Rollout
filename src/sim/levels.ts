@@ -20,7 +20,7 @@ export const LEVELS: LevelDef[] = [
   {
     id: "crossing",
     name: "The Crossing",
-    blurb: "Four crystals split by a red band. One gap — and one segment of the band drifts.",
+    blurb: "Four parcels split by a caution band. One gap — and one segment of the band drifts.",
     seed: 7,
     maxTicks: 160,
     map: [
@@ -49,7 +49,7 @@ export const LEVELS: LevelDef[] = [
   {
     id: "rooms",
     name: "Six Rooms",
-    blurb: "Doorways force detours. A red zone patrols the east corridor.",
+    blurb: "Doorways force detours. A moving caution zone patrols the east corridor.",
     seed: 21,
     maxTicks: 200,
     map: [
@@ -78,8 +78,8 @@ export const LEVELS: LevelDef[] = [
   },
   {
     id: "field",
-    name: "Open Field",
-    blurb: "Five crystals in the open, pillars and scattered red zones. Many paths, few clean ones.",
+    name: "Open Floor",
+    blurb: "Five parcels in the open, pillars and scattered caution zones. Many paths, few clean ones.",
     seed: 1337,
     maxTicks: 220,
     map: [

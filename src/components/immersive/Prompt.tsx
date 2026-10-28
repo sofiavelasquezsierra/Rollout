@@ -5,7 +5,7 @@ import { headFrame } from "@/store/run";
 import { useRollout } from "@/store/useRollout";
 import { Icon } from "@/components/ui/Icon";
 
-const SUGGESTIONS = ["Avoid the red zone", "Nearest crystal first", "Bottom crystals first", "Head straight for the goal"];
+const SUGGESTIONS = ["Avoid the caution zones", "Nearest parcel first", "Bottom parcels first", "Return to the dock now"];
 
 /** Talk to the agent. In the past, speaking splits the world first. */
 export const Prompt = forwardRef<HTMLInputElement>(function Prompt(_, ref) {

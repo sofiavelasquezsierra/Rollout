@@ -17,7 +17,7 @@ const mono = Geist_Mono({
 });
 
 const description =
-  "A debugger for an AI agent acting in a simulated world: scrub, fork, redirect and compare rollouts. A design-engineering portfolio piece.";
+  "Counterfactual rollouts for agents: fork a simulated robot test bay at any frame, redirect the agent in plain language, and compare the futures with a separate evaluator. A design-engineering portfolio piece.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),

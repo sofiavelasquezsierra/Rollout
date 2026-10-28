@@ -17,8 +17,9 @@ export function HowItWorks() {
 
       <dl className="space-y-4">
         <Row title="The world" tag="stylized simulator">
-          A 24×16 gridworld simulated in TypeScript in your browser and drawn in 3D with three.js — <strong className="text-ink">not a Runway model</strong> and
-          not a learned world model. It is fully deterministic (seeded RNG stored in the state), so any frame can be
+          A 24×16 gridworld simulated in TypeScript in your browser: a delivery robot collects parcels, avoids caution
+          zones and returns to its charging dock. It is rendered in real time with three.js to look like a filmed test
+          bay — <strong className="text-ink">not generated video, not a Runway model</strong> and not a learned world model. It is fully deterministic (seeded RNG stored in the state), so any frame can be
           serialized, forked and replayed to an identical result.
         </Row>
         <Row title="The agent" tag={live?.agentModel ?? "Claude"}>

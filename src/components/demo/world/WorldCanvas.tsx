@@ -124,7 +124,7 @@ export function WorldCanvas({ className }: { className?: string }) {
       <canvas
         ref={canvasRef}
         role="img"
-        aria-label={`Gridworld at frame ${cursor}. Agent at column ${state.agent.pos.x}, row ${state.agent.pos.y}, facing ${state.agent.facing}. ${left} of ${state.objects.length} crystals remaining. ${state.violations.length} violations so far. Status: ${state.outcome}.`}
+        aria-label={`Gridworld at frame ${cursor}. Agent at column ${state.agent.pos.x}, row ${state.agent.pos.y}, facing ${state.agent.facing}. ${left} of ${state.objects.length} parcels remaining. ${state.violations.length} violations so far. Status: ${state.outcome}.`}
         className="absolute inset-0"
       />
     </div>

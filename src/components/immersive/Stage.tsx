@@ -174,7 +174,7 @@ function WorldCanvas3D({ canvasRef }: { canvasRef: React.RefObject<HTMLCanvasEle
     <canvas
       ref={canvasRef}
       role="img"
-      aria-label={`${run.order.length} parallel world${run.order.length === 1 ? "" : "s"}. Active world “${run.branches[activeId].name}” at frame ${cursor}: agent at column ${s.agent.pos.x}, row ${s.agent.pos.y}; ${left} of ${s.objects.length} crystals left; ${s.violations.length} violations; ${s.outcome}.`}
+      aria-label={`${run.order.length} parallel world${run.order.length === 1 ? "" : "s"}. Active world “${run.branches[activeId].name}” at frame ${cursor}: robot at column ${s.agent.pos.x}, row ${s.agent.pos.y}; ${left} of ${s.objects.length} parcels left; ${s.violations.length} violations; ${s.outcome}.`}
       className="absolute inset-0 h-full w-full"
       onClick={(e) => {
         const r = e.currentTarget.getBoundingClientRect();

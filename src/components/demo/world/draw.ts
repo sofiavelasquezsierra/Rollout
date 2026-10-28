@@ -66,7 +66,7 @@ export function drawWorld(ctx: CanvasRenderingContext2D, s: WorldState, L: Layou
     }
   }
 
-  // Drift ranges (where a moving red zone can be)
+  // Drift ranges (where a moving caution zone can be)
   ctx.save();
   ctx.setLineDash([3, 4]);
   ctx.lineWidth = 1;
@@ -120,28 +120,25 @@ export function drawWorld(ctx: CanvasRenderingContext2D, s: WorldState, L: Layou
     ctx.fillRect(gx + k, gy + k, c - 2 * k, c - 2 * k);
   }
 
-  // Objects: diamonds; collected ones leave a faint outline
+  // Parcels: small boxes with a tape stripe; collected ones leave a faint outline
   for (const ob of s.objects) {
     const x = cx(ob.pos.x);
     const y = cy(ob.pos.y);
-    const r = c * 0.26;
-    ctx.beginPath();
-    ctx.moveTo(x, y - r);
-    ctx.lineTo(x + r, y);
-    ctx.lineTo(x, y + r);
-    ctx.lineTo(x - r, y);
-    ctx.closePath();
+    const r = c * 0.28;
     if (ob.collected) {
       ctx.strokeStyle = withAlpha(P.object, 0.22);
       ctx.lineWidth = 1;
-      ctx.stroke();
+      ctx.strokeRect(x - r, y - r, r * 2, r * 2);
     } else {
       ctx.save();
-      ctx.shadowColor = withAlpha(P.object, 0.6);
-      ctx.shadowBlur = c * 0.4;
+      ctx.shadowColor = "rgba(0,0,0,0.6)";
+      ctx.shadowBlur = c * 0.25;
+      ctx.shadowOffsetY = c * 0.06;
       ctx.fillStyle = P.object;
-      ctx.fill();
+      ctx.fillRect(x - r, y - r, r * 2, r * 2);
       ctx.restore();
+      ctx.fillStyle = "rgba(255,240,210,0.35)";
+      ctx.fillRect(x - r * 0.18, y - r, r * 0.36, r * 2);
     }
   }
 
