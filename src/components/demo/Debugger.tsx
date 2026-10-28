@@ -1,10 +1,13 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { LEVELS } from "@/sim";
 import { useRollout } from "@/store/useRollout";
 import { Button, Kbd, Label } from "@/components/ui/primitives";
+import { AgentModeToggle } from "./AgentModeToggle";
 import { BranchGraph } from "./BranchGraph";
+import { Director } from "./Director";
+import { Inspector } from "./Inspector";
 import { BranchList } from "./BranchList";
 import { NoticeToast } from "./NoticeToast";
 import { Timeline } from "./Timeline";
@@ -30,7 +33,15 @@ export function Debugger() {
   const run = useRollout((s) => s.run);
   const cursor = useRollout((s) => s.cursor);
   const freshId = useRollout((s) => s.freshBranchId);
-  const { newRun, fork } = useRollout.getState();
+  const live = useRollout((s) => s.live);
+  const { newRun, fork, fetchStatus, setPlaying } = useRollout.getState();
+  useEffect(() => {
+    void fetchStatus();
+  }, [fetchStatus]);
+  const runLive = () => {
+    newRun(run.levelId, "claude");
+    setPlaying(true);
+  };
 
   return (
     <section
@@ -40,11 +51,25 @@ export function Debugger() {
       <div className="flex items-center gap-3 border-b border-line px-4 py-2">
         <Label>Run</Label>
         <span className="text-13 text-ink">{run.title}</span>
+        <div className="ml-auto flex items-center gap-2">
+          <Label className="hidden xl:inline">Agent</Label>
+          <AgentModeToggle />
+        </div>
+        <Button
+          variant="accent"
+          size="sm"
+          icon="spark"
+          onClick={runLive}
+          disabled={!live?.available}
+          title={live?.available ? "Start a fresh rollout on this level with the live Claude agent" : "Live agent unavailable: no API key on this deployment"}
+        >
+          Run live
+        </Button>
         <select
           aria-label="Start a new run on level"
           value=""
           onChange={(e) => e.target.value && newRun(e.target.value)}
-          className="ml-auto h-7 rounded-md border border-line bg-surface-2 px-2 text-12 text-ink-2"
+          className="h-7 rounded-md border border-line bg-surface-2 px-2 text-12 text-ink-2"
         >
           <option value="">New run…</option>
           {LEVELS.map((l) => (
@@ -83,23 +108,23 @@ export function Debugger() {
           <NoticeToast />
         </div>
 
-        <aside aria-label="Inspector" className="hidden border-l border-line p-4 lg:block">
-          <Label>Inspector</Label>
+        <aside aria-label="Inspector" className="hidden min-h-0 border-l border-line lg:block">
+          <Inspector />
         </aside>
       </div>
 
       <div className="border-t border-line bg-surface-1 px-4 pb-3 pt-2">
-        <div className="flex items-center gap-4">
+        <div className="flex items-start gap-4">
           <Transport />
-          <Button icon="fork" onClick={() => fork()} title="Fork the world at the playhead (F)" aria-keyshortcuts="F">
+          <Button icon="fork" onClick={() => fork()} title="Fork the world at the playhead (F)" aria-keyshortcuts="F" className="mt-0.5">
             Fork at f{cursor}
             <Kbd>F</Kbd>
           </Button>
+          <Director ref={directorRef} />
         </div>
         <div className="mt-1">
           <Timeline />
         </div>
-        <textarea ref={directorRef} className="sr-only" aria-label="Director (coming soon)" />
         {helpOpen && <p className="text-12 text-ink-3">Shortcuts panel coming soon.</p>}
       </div>
     </section>

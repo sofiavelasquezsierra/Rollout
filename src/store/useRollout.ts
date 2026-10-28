@@ -51,7 +51,10 @@ interface RolloutState {
   renamingId: string | null;
   compare: [string, string] | null;
   notice: Notice | null;
+  /** Server capability, from /api/status. null = unknown yet. */
+  live: { available: boolean; agentModel?: string; evaluatorModel?: string } | null;
 
+  fetchStatus(): Promise<void>;
   loadRun(run: Run, opts?: { branchId?: string; cursor?: number; mode?: AgentMode }): void;
   newRun(levelId: string, mode?: AgentMode): void;
   setCursor(frame: number): void;
@@ -107,6 +110,17 @@ export const useRollout = create<RolloutState>((set, get) => ({
   renamingId: null,
   compare: null,
   notice: null,
+  live: null,
+
+  async fetchStatus() {
+    try {
+      const r = await fetch("/api/status", { cache: "no-store" });
+      const j = await r.json();
+      set({ live: { available: Boolean(j.live), agentModel: j.agentModel, evaluatorModel: j.evaluatorModel } });
+    } catch {
+      set({ live: { available: false } });
+    }
+  },
 
   loadRun(run, opts = {}) {
     abortInflight();
