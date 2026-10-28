@@ -68,6 +68,7 @@ function DecisionPanel() {
   const setCursor = useRollout((s) => s.setCursor);
   const setPlaying = useRollout((s) => s.setPlaying);
   const head = headFrame(run.branches[activeId]);
+  const [showAll, setShowAll] = useState(false);
 
   const decisions = events.filter((e): e is DecisionEvent => e.kind === "decision");
   const current = [...decisions].reverse().find((d) => d.frame <= cursor && cursor <= d.frame + d.actions.length) ??
@@ -77,7 +78,7 @@ function DecisionPanel() {
 
   return (
     <div className="space-y-5">
-      <section aria-live="polite">
+      <section>
         <div className="mb-2 flex items-center justify-between">
           <Label>{streaming ? "Agent is deciding" : "Decision at playhead"}</Label>
           {current && !streaming && <SourceBadge d={current} />}
@@ -139,7 +140,7 @@ function DecisionPanel() {
         <section>
           <Label className="mb-2 block">Decision log · {decisions.length}</Label>
           <ol className="space-y-px">
-            {[...decisions].reverse().slice(0, 40).map((d) => {
+            {[...decisions].reverse().slice(0, showAll ? 200 : 8).map((d) => {
               const active = d === current;
               return (
                 <li key={d.id}>
@@ -162,6 +163,15 @@ function DecisionPanel() {
               );
             })}
           </ol>
+          {decisions.length > 8 && (
+            <button
+              type="button"
+              onClick={() => setShowAll((v) => !v)}
+              className="mt-2 font-mono text-12 text-ink-3 underline decoration-line-strong underline-offset-4 hover:text-ink"
+            >
+              {showAll ? "Show fewer" : `Show all ${decisions.length}`}
+            </button>
+          )}
         </section>
       )}
     </div>

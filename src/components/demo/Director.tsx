@@ -32,7 +32,7 @@ export const Director = forwardRef<HTMLTextAreaElement>(function Director(_, ref
   };
 
   return (
-    <div className="flex min-w-0 flex-1 flex-col gap-1.5">
+    <div className="flex w-full min-w-0 flex-col gap-1.5 xl:w-auto xl:flex-1">
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -67,7 +67,7 @@ export const Director = forwardRef<HTMLTextAreaElement>(function Director(_, ref
         <button
           type="submit"
           disabled={!text.trim()}
-          className="inline-flex h-7 items-center gap-1.5 rounded-sm bg-accent px-2.5 text-12 font-medium text-accent-ink t-fast transition-[filter,opacity] hover:brightness-110 disabled:opacity-30"
+          className="inline-flex h-7 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-sm bg-accent px-2.5 text-12 font-medium text-accent-ink t-fast transition-[filter,opacity] hover:brightness-110 disabled:opacity-30"
         >
           {willFork ? "Fork + redirect" : "Redirect"}
           <Icon name="send" size={14} />

@@ -10,7 +10,7 @@ const FALLBACK = {
   lineStrong: "#2d343e",
   ink: "#e7e9ec",
   ink2: "#a4abb5",
-  ink3: "#7c8591",
+  ink3: "#868f9b",
   accent: "#e9b872",
   hazard: "#d9695f",
   ok: "#73b9a9",

@@ -19,7 +19,7 @@
   /* ── Color: ink (all AA on --c-bg and --c-surface-1) ─────────── */
   --c-ink: #e7e9ec;         /* primary text  ~15.8:1 */
   --c-ink-2: #a4abb5;       /* secondary     ~8.1:1  */
-  --c-ink-3: #7c8591;       /* tertiary      ~5.0:1  */
+  --c-ink-3: #868f9b;       /* tertiary      ~5.8:1 (≥4.5 on every surface) */
 
   /* ── Color: signal ───────────────────────────────────────────── */
   --c-accent: #e9b872;      /* phosphor amber — the only accent */

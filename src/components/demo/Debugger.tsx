@@ -105,7 +105,7 @@ export function Debugger() {
     <section aria-label="Rollout debugger" className="grid min-h-0 flex-1 grid-rows-[auto_minmax(0,1fr)_auto] border-t border-line bg-bg">
       {/* Run header */}
       <div className="flex flex-wrap items-center gap-x-3 gap-y-2 border-b border-line px-4 py-2">
-        <div className="flex min-w-0 flex-1 items-center gap-3">
+        <div className="flex min-w-[min(100%,320px)] flex-1 items-center gap-3">
           <Label>Run</Label>
           <span className="truncate text-13 text-ink" title={run.description}>
             {run.title}
@@ -188,7 +188,7 @@ export function Debugger() {
       </div>
 
       {/* Controls */}
-      <div className="border-t border-line bg-surface-1 px-4 pb-3 pt-2">
+      <div id="playback" tabIndex={-1} aria-label="Playback controls" role="group" className="border-t border-line bg-surface-1 px-4 pb-3 pt-2 outline-none">
         <div className="flex flex-wrap items-start gap-x-4 gap-y-2">
           <Transport />
           <Button icon="fork" onClick={() => fork()} title="Fork the world at the playhead (F)" aria-keyshortcuts="F" className="mt-0.5">

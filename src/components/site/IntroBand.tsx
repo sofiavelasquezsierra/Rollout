@@ -8,12 +8,12 @@ import { Kbd } from "@/components/ui/primitives";
 export function IntroBand() {
   const setDialog = useRollout((s) => s.setDialog);
   return (
-    <div className="flex flex-wrap items-end justify-between gap-x-8 gap-y-3 px-4 pb-4 pt-5 md:px-6">
+    <div className="flex flex-wrap items-end justify-between gap-x-8 gap-y-3 px-4 pb-4 pt-5 md:px-6 [@media(max-height:860px)]:pb-3 [@media(max-height:860px)]:pt-3">
       <div className="max-w-2xl">
         <h1 className="text-24 font-medium tracking-[-0.02em] text-ink">
           Debugging agents in <span className="font-serif text-[1.08em] italic">simulated worlds</span>
         </h1>
-        <p className="mt-1.5 text-15 text-ink-2">
+        <p className="mt-1.5 text-15 text-ink-2 [@media(max-height:860px)]:hidden">
           Watch an agent act, scrub its rollout, fork the world at any frame, redirect it in plain language, and compare
           branches scored by a separate evaluator.
         </p>
